@@ -18,7 +18,9 @@ class BotTokenController extends Controller
 
         $url = config('app.url');
         $endpoint = $url . "/logout";
-        $object = ['_token' => csrf_token()];
+        $object = [
+            'phonenumber' => $phonenumber
+        ];
         
         \Log::channel('transaction')->info("TGO <- PATH " . $endpoint);
         \Log::channel('transaction')->info("TGO <- BODY " . json_encode($object));
