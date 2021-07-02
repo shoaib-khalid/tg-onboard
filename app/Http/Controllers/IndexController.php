@@ -16,7 +16,7 @@ class IndexController extends Controller
         $userid = $request->userid;
 
         if (!isset($userid)) {
-            return abort(404);
+            return view("welcome");
         }
 
         return view("index",['userid'=>$userid]);
