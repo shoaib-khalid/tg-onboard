@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TestController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\BotTokenController;
+use App\Http\Controllers\FailedController;
 use Illuminate\Http\Request;
 
 /*
