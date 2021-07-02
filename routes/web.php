@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\BotTokenController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +16,23 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Route::get('/',function(){
+//     $url = $request->fullUrlWithQuery(['bar' => 'baz']);
+//     return view('index',['url',$url]);
+// });
+Route::get('/',[IndexController::class,'loadView']);
+Route::post('/',[IndexController::class,'start']);
+Route::post('/logout',[IndexController::class,'logout']);
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/bottoken',[BotTokenController::class,'loadView']);
+Route::post('/bottoken',[BotTokenController::class,'setWebhook']);
+
+Route::get('/failed',[FailedController::class,'loadView']);
+
+/**
+ * @hideFromAPIDocumentation
+ */
+Route::fallback(function () {
+    //Send to 404 or whatever here.
+    return abort(404);
 });

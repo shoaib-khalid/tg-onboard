@@ -102,4 +102,11 @@ return [
         ],
     ],
 
+    'transaction' => [
+        'driver' => 'single',
+        // 'tap' => [],
+        'path' => storage_path('logs/transaction.log'),
+        'level' => 'debug'
+    ],
+
 ];

@@ -30,4 +30,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'telegram' => [
+        'url' => env('TELEGRAM_URL','https://api.telegram.org'),
+        'token' => env('TELEGRAM_TOKEN')
+    ],
+
+    'userservice' => [
+        'url' => env('USER_SERVICE_URL','http://localhost')
+    ],
+
 ];
