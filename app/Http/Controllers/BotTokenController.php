@@ -21,7 +21,7 @@ class BotTokenController extends Controller
         $object = ['_token' => csrf_token()];
         
         \Log::channel('transaction')->info("TGO <- PATH " . $endpoint);
-        \Log::channel('transaction')->info("TGO <- PARAM " . $parameters);
+        \Log::channel('transaction')->info("TGO <- BODY " . json_encode($object));
         $response = Http::post($endpoint, $object);
         \Log::channel('transaction')->info("TGO <- RESP " . $response);
         
