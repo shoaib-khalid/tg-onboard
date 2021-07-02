@@ -13,7 +13,7 @@ class BotTokenController extends Controller
         if(session('phonenumber')) { 
             $phonenumber = session('phonenumber'); 
         } else {
-            return redirect()->route('/');
+            return redirect('/failed');
         }
 
         $url = config('app.url');

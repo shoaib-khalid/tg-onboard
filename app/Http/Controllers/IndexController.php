@@ -75,12 +75,12 @@ class IndexController extends Controller
             $MadelineProto->messages->sendMessage(['peer' => '@BotFather', 'message' => $botname]);
             sleep(2);
             $MadelineProto->messages->sendMessage(['peer' => '@BotFather', 'message' => $botuname]);
-            sleep(2);
+            sleep(5);
         } else {
-            return redirect()->route('/failed');
+            return redirect('/failed');
         }
 
-        return redirect()->route('/bottoken');
+        return redirect('/bottoken');
     }
 
     function logout(){
@@ -92,7 +92,7 @@ class IndexController extends Controller
             $phonenumber = $data['phonenumber'];
             $pattern = '/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/i';
             if (!preg_match($pattern, $phonenumber)){ // Outputs 1
-                return redirect()->route('/failed');
+                return redirect('/failed');
             }    
         
             // initiate madeline proto
