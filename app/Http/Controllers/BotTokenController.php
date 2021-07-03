@@ -28,8 +28,7 @@ class BotTokenController extends Controller
 
         return view("bottoken",[
             'botuname' => session('botuname'),
-            'userId' => session('userId'),
-            'token' => session('token')
+            'userid' => session('userid')
         ]);
     }
 
@@ -43,9 +42,9 @@ class BotTokenController extends Controller
 
         $data = $request->input();
 
-        if (isset($data['botuname']) && isset($data['userId']) && isset($data['token'])){
+        if (isset($data['botuname']) && isset($data['userid']) && isset($data['token'])){
             $botuname = $data['botuname'];
-            $userId = $data['userId'];
+            $userid = $data['userid'];
             $token = $data['token'];
         } else {
             return redirect('/failed');
@@ -74,7 +73,7 @@ class BotTokenController extends Controller
         $header = ["Content-type: application/json"];
         $object = [
             'refId' => $botuname,
-            'userId' => $userId,
+            'userId' => $userid,
             'channelName' => 'telegram',
             'token' => $token
         ];
