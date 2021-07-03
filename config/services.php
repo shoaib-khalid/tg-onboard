@@ -35,6 +35,10 @@ return [
         'token' => env('TELEGRAM_TOKEN')
     ],
 
+    'tgw' => [
+        'url' => env('TELEGRAM_WRAPPER_URL','http://localhost')
+    ],
+
     'userservice' => [
         'url' => env('USER_SERVICE_URL','http://localhost')
     ],

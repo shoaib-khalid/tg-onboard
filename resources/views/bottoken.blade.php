@@ -12,6 +12,9 @@
     <form method="post" action="">
         @csrf
         Bot token : <input style="width:30%" type="text" placeholder="example: 99853088:AAFfd36hf6btwTjGNF1R_9_gt48tgdhtzRK8"/>
+        Bot Username : <input type="text" name="botuname" value="{{$botuname}}">
+        Bot Token : <input type="text" name="botuname" value="{{$token}}">
+        Merchant Id : <input type="text" name="botuname" value="{{$userId}}" readonly>
         <button>submit</button>
     </form>
 </body>
