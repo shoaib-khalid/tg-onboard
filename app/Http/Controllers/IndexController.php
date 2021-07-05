@@ -65,7 +65,7 @@ class IndexController extends Controller
         $MadelineProto = new \danog\MadelineProto\API('./sessions/session.' . $phonenumber);
         $MadelineProto->start();
         $me = $MadelineProto->getSelf();
-        $MadelineProto->logger($me);
+        // $MadelineProto->logger($me);
         
         if (!$me['bot']) {
             $MadelineProto->messages->sendMessage(['peer' => '@BotFather', 'message' => "/start"]);
