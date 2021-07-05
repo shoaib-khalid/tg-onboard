@@ -15,6 +15,8 @@ class IndexController extends Controller
     function loadView(Request $request){
         $userid = $request->userid;
 
+        \Log::channel('transaction')->info("Logger Works");
+
         if (!isset($userid)) {
             return view("welcome");
         }
@@ -29,8 +31,6 @@ class IndexController extends Controller
      * @return \Illuminate\Http\Response
      */
     function start(Request $request){
-
-        \Log::channel('transaction')->info("Logger Works");
 
         $data = $request->input();
 
