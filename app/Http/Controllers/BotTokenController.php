@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 
 class BotTokenController extends Controller
@@ -40,15 +41,31 @@ class BotTokenController extends Controller
      */
     function setWebhook (Request $request) {
 
-        $data = $request->input();
+        $validate = Validator::make(
+            $request->all(), [ 
+                'botuname' => 'required|string',
+                'userid' => 'required|string',
+                'token' => 'required|string'
+            ]
+        );
 
-        if (isset($data['botuname']) && isset($data['userid']) && isset($data['token'])){
-            $botuname = $data['botuname'];
-            $userid = $data['userid'];
-            $token = $data['token'];
-        } else {
-            return redirect('/failed');
+        if ($validate->fails()) {
+            return response()->json(
+                [
+                    'system' => 'telegram-onboard',
+                    'action' => 'setWebhook',
+                    'status' => false,
+                    'system_response' =>$validate->errors(),
+                    'description' => 'Invalid parameters',
+                    'status' => false
+                ],
+                400
+            );
         }
+
+        $botuname = $request['botuname'];
+        $userid = $request['userid'];
+        $token = $request['token'];
 
         /**
          * Set Webhook
@@ -56,12 +73,22 @@ class BotTokenController extends Controller
         $endpoint = config('services.telegram.url') . "/bot" . $token . "/setwebhook";
         $webhookUrl = config('services.tgw.url') . "/incoming/" . $botuname;
         $data = ['url' => $webhookUrl];
-        $parameters = http_build_query($data);
+        $parameters = urldecode(http_build_query($data));
 
         \Log::channel('transaction')->info("Telegram <- PATH " . $endpoint);
         \Log::channel('transaction')->info("Telegram <- PARAM " . $parameters);
         $response = Http::get($endpoint . "?" . $parameters);
         \Log::channel('transaction')->info("Telegram <- RESP " . $response);
+
+        if (!$response["ok"]) {
+            return response()->json([
+                'system' => 'telegram',
+                'action' => 'setwebhook',
+                'status' => false,
+                'system_response' => $response->json(),
+                'description' => 'Set webhook failed, please make sure you have entered the correct token'
+            ],$response["error_code"]);
+        }
 
 
         /**
@@ -69,18 +96,34 @@ class BotTokenController extends Controller
          */
 
         $url = config('services.userservice.url');
+        $tokenBearer = config('services.userservice.token');
         $endpoint = $url . "/v1/userChannels";
-        $header = ["Content-type: application/json"];
+        $header = [
+            "Content-type" => "application/json",
+            "Authorization" => "Bearer $tokenBearer"
+        ];
         $object = [
             'refId' => $botuname,
             'userId' => $userid,
             'channelName' => 'telegram',
-            'token' => $token
+            'token' => $token,
         ];
         
         \Log::channel('transaction')->info("User Service <- PATH " . $endpoint);
         \Log::channel('transaction')->info("User Service <- BODY " . json_encode($object));
         $response = Http::withHeaders($header)->post($endpoint, $object);
-        \Log::channel('transaction')->info("User Service <- RESP " . $response);
+        \Log::channel('transaction')->info("User Service <- RESP " . $response->status() . " " . $response);
+
+        if ($response["message"] !== "OK") {
+            return response()->json([
+                'system' => 'user-service',
+                'action' => 'set userChannels',
+                'status' => false,
+                'system_response' => $response->json(),
+                'description' => 'Backend problem, please contact system admin'
+            ],$response["status"]);
+        }
+
+        return response()->json();
     }
 }

@@ -40,7 +40,8 @@ return [
     ],
 
     'userservice' => [
-        'url' => env('USER_SERVICE_URL','http://localhost')
+        'url' => env('USER_SERVICE_URL','http://localhost'),
+        'token' => env('USER_SERVICE_TOKEN','accessToken')
     ],
 
 ];

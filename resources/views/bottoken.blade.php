@@ -9,12 +9,53 @@
         Copy and Paste token given by BotFather to below input field:
         </p>
     </div>
-    <form method="post" action="">
+    <form onsubmit="loadDoc(); return false;">
         @csrf
-        Bot token : <input style="width:30%" type="text" name="name" placeholder="example: 99853088:AAFfd36hf6btwTjGNF1R_9_gt48tgdhtzRK8"/> <br/>
-        Bot Username : <input type="text" name="botuname" value="{{$botuname}}"> <br/>
-        Merchant Id : <input type="text" name="userid" value="{{$userid}}" readonly> <br/>
+        Bot token : <input style="width:30%" type="text" id="token" name="token" placeholder="example: 99853088:AAFfd36hf6btwTjGNF1R_9_gt48tgdhtzRK8"/> <br/><br/>
+        Bot Username : <input type="text" id="botuname" name="botuname" value="{{$botuname}}"> <br/><br/>
+        Merchant Id : <input type="text" id="userid" name="userid" value="{{$userid}}"> <br/>
         <button>submit</button>
     </form>
+    
+    <div>
+        <pre id="demo">
+            Testing    
+        </pre>
+    </div>
+
+    <script>
+        function loadDoc() {
+
+            $botuname = document.getElementById("botuname").value;
+            $userid = document.getElementById("userid").value;
+            $token = document.getElementById("token").value;
+
+            if (!$botuname || !$userid  || !$token ) {
+                document.getElementById("demo").innerHTML = "All field are required";
+                return false;
+            }
+
+            var data = {
+                botuname : $botuname,
+                userid : $userid,
+                token : $token
+            };
+            
+
+            const xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange  = function() {
+                if(xhttp.readyState == 4) {
+                    if (xhttp.status == 200)
+                    document.getElementById("demo").innerHTML = xhttp.responseText;
+                    else 
+                    document.getElementById("demo").innerHTML = xhttp.responseText;
+                }
+            }
+            xhttp.open("POST", "/bottoken");
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.setRequestHeader("Accept", "application/json");
+            xhttp.send(JSON.stringify(data));
+        }
+    </script>
 </body>
 </html>
