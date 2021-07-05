@@ -85,7 +85,7 @@ class IndexController extends Controller
         return redirect('/bottoken?status=success');
     }
 
-    function logout(){
+    function logout(Request $request){
         $data = $request->input();
 
         // print_r($data);
