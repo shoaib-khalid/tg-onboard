@@ -30,6 +30,8 @@ class IndexController extends Controller
      */
     function start(Request $request){
 
+        \Log::channel('transaction')->info("Logger Works");
+
         $data = $request->input();
 
         // redirect back to get page is one of the variable unset
