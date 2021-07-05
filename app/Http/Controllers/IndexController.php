@@ -77,10 +77,10 @@ class IndexController extends Controller
             $MadelineProto->messages->sendMessage(['peer' => '@BotFather', 'message' => $botuname]);
             sleep(5);
         } else {
-            return redirect('/failed');
+            return redirect('/bottoken?status=failed');
         }
 
-        return redirect('/bottoken');
+        return redirect('/bottoken?status=success');
     }
 
     function logout(){
