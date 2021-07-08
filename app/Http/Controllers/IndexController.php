@@ -42,7 +42,14 @@ class IndexController extends Controller
             $satisfy = true;
         }
         
-        if (!$satisfy) return redirect('/failed');
+        if (!$satisfy) {
+            $error="Requirement not satisfied";
+            $description="userid => " . session('userid') . ",phonenumber => " . session('phonenumber') . ",botname => " . session('botname') . ",botuname => " . session('botuname');
+            return view("complete",[
+                'error' => $error,
+                'description' => $description
+            ]);
+        };
 
         // set to sessions
         if(!session('userid')) { $request->session()->put('userid',$data['userid']); } 
@@ -50,19 +57,30 @@ class IndexController extends Controller
         if(!session('botname')) { $request->session()->put('botname',$data['botname']); } 
         if(!session('botuname')) { $request->session()->put('botuname',$data['botuname']); } 
 
-        @include './includes/ApiWrappers/Templates.php';
-        @include './includes/ApiWrappers/Start.php';
-        @include './includes/Wrappers/Templates.php';
-
-        // include './Settings/Templates.php';
-        @include './MTProtoTools/MTProto.php';
-        // include './MTProtoTools/ResponseInfo.php';
-        // include './MTProtoTools/MyTelegramOrgWrapper.php';
+        session()->save();
 
         $userid = session('userid');
         $phonenumber = session('phonenumber');
         $botname = session('botname');
         $botuname = session('botuname');
+        
+        // append @ to botusername
+        if ($botuname[0] !== '@') {
+            $botuname = '@'.$botuname;
+        }
+
+        // $description="userid => " . session('userid') . ",phonenumber => " . session('phonenumber') . ",botname => " . session('botname') . ",botuname => " . session('botuname');
+        // print $description;
+        // exit;
+
+        @include __DIR__.'/includes/ApiWrappers/Templates.php';
+        @include __DIR__.'/includes/ApiWrappers/Start.php';
+        @include __DIR__.'/includes/Wrappers/Templates.php';
+
+        // @include './Settings/Templates.php';
+        // @include './MTProtoTools/MTProto.php';
+        // include './MTProtoTools/ResponseInfo.php';
+        // include './MTProtoTools/MyTelegramOrgWrapper.php';
 
         $MadelineProto = new \danog\MadelineProto\API('./sessions/session.' . $phonenumber);
         $MadelineProto->start();
@@ -94,7 +112,12 @@ class IndexController extends Controller
             $phonenumber = $data['phonenumber'];
             $pattern = '/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/i';
             if (!preg_match($pattern, $phonenumber)){ // Outputs 1
-                return redirect('/failed');
+                $error="Wrong Phonenumber Format";
+                $description="Wrong Phonenumber Format";
+                return view("complete",[
+                    'error' => $error,
+                    'description' => $description
+                ]);
             }    
         
             // initiate madeline proto

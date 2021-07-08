@@ -72,13 +72,13 @@ trait Templates
     private function webAPIEcho(string $message = ''): Promise
     {
         $botname = "";
-        if (isset($_SESSION["botname"])) $botname = $_SESSION["botname"];
+        if (session('botname')) $botname = session('botname');
 
         $botuname = "";
-        if (isset($_SESSION["botuname"])) $botuname = $_SESSION["botuname"];
+        if (session('botuname')) $botuname = session('botuname');
 
         $phonenumber = "";
-        if (isset($_SESSION["phonenumber"])) $phonenumber = $_SESSION["phonenumber"];
+        if (session('phonenumber')) $phonenumber = session('phonenumber');
 
         $message = \htmlentities($message);
         if (!isset($this->myTelegramOrgWrapper)) {
@@ -104,7 +104,7 @@ trait Templates
                     $title = Lang::$current_lang['apiAutoWeb'];
                     $title .= "<br><b>$message</b>";
                     $phone = \htmlentities(Lang::$current_lang['loginUserPhoneWeb']);
-                    $form = "<input type='text' name='phone_number' value='$phonenumber' placeholder='$phone' required/>";
+                    $form = "<input type='text' name='phone_number' value='$phonenumber' placeholder='$phone' required readonly/>";
                 }
             } else {
                 if ($message) {
@@ -182,6 +182,7 @@ trait Templates
                 }
             }
         }
+        $form .= '<input name="_token" value="'.csrf_token().'" type="hidden">';
         return getOutputBufferStream()->write($this->webAPIEchoTemplate($title, $form));
     }
 }

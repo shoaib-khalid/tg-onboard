@@ -15,6 +15,10 @@
             vertical-align: middle;
         }
 
+        button.disabled:hover {
+            cursor:not-allowed
+        }
+
         #cont_phonenumber_msg, #cont_botname_msg, #cont_botuname_msg {
             display: none;
         }
@@ -68,7 +72,7 @@
 
                         <input type="hidden" name="userid" value="{{$userid}}">
 
-                        <button class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded" type="submit">Lets Go</button>
+                        <button id="submitBtn" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded" type="submit">Lets Go</button>
                     </form>
                 </div>
             </div>
@@ -146,6 +150,10 @@
             }
 
             function validate_form() {
+
+                document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").classList.add("disabled");
+
                 let status = false;
                 var status_phonenumber = check_phonenumber();
                 var status_botname = check_botname();

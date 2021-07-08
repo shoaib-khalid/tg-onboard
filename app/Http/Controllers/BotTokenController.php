@@ -37,6 +37,7 @@ class BotTokenController extends Controller
             $url = config('app.url');
             $endpoint = $url . "/logout";
             $object = [
+                '_token' => csrf_token(),
                 'phonenumber' => $phonenumber
             ];
             
@@ -135,14 +136,22 @@ class BotTokenController extends Controller
         $response = Http::withHeaders($header)->post($endpoint, $object);
         \Log::channel('transaction')->info("User Service <- RESP " . $response->status() . " " . $response);
 
-        if ($response["message"] !== "OK") {
+        if ($response["status"] !== 201) {
+            if ($response["status"] == 409) {
+                $description = "This bot username is already registered in the symplified. 
+                Contact admin if this happen t be a problem";
+            } else {
+                $description = "Backend problem, please contact system admin";
+            }
+
             return response()->json([
                 'system' => 'user-service',
                 'action' => 'set userChannels',
                 'status' => false,
                 'system_response' => $response->json(),
-                'description' => 'Backend problem, please contact system admin'
+                'description' => $description
             ],$response["status"]);
+
         }
 
 
