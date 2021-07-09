@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        button.disabled:hover {
+            cursor:not-allowed
+        }
+    </style>
 </head>
 <body class="bg-blue-700">
     <div class="container">
@@ -42,7 +47,7 @@
                 <label class="label block w-full" for="phonenumber">Merchant Id</label>  
                 <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" type="text" id="userid" name="userid" value="{{$userid}}" placeholder="0644ddb5-f7af-4700-b4b4-59dc44f90d88"/> <br/>
                 
-                <button class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded">submit</button>
+                <button id="submitBtn" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded">Submit</button>
             </form>
         </div>
     </div>
@@ -50,43 +55,56 @@
     <script>
         function loadDoc() {
 
-            botuname = document.getElementById("botuname").value;
-            userid = document.getElementById("userid").value;
-            token = document.getElementById("token").value;
+            action = document.getElementById("submitBtn").innerHTML;
 
-            if (!botuname || !userid  || !token ) {
-                document.getElementById("message").className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
-                document.getElementById("message").innerHTML = "All field are required";
-                return false;
-            }
+            if (action === "Submit") {
 
-            var data = {
-                botuname : botuname,
-                userid : userid,
-                token : token
-            };
+                botuname = document.getElementById("botuname").value;
+                userid = document.getElementById("userid").value;
+                token = document.getElementById("token").value;
 
-            var csrf_token =  "{{ csrf_token() }}";
+                if (!botuname || !userid  || !token ) {
+                    document.getElementById("message").className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
+                    document.getElementById("message").innerHTML = "All field are required";
+                    return false;
+                }
 
-            const xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange  = function() {
-                if(xhttp.readyState == 4) {
-                    if (xhttp.status == 200) {
-                        document.getElementById("message").className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
-                        document.getElementById("message").innerHTML = "Bot Registration Sucess";
-                    } else {
-                        document.getElementById("message").className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
-                        document.getElementById("message").innerHTML = JSON.parse(xhttp.responseText)["description"];
+                document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").classList.add("disabled");
+
+                var data = {
+                    botuname : botuname,
+                    userid : userid,
+                    token : token
+                };
+
+                var csrf_token =  "{{ csrf_token() }}";
+
+                const xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange  = function() {
+                    if(xhttp.readyState == 4) {
+                        if (xhttp.status == 200) {
+                            document.getElementById("message").className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
+                            document.getElementById("message").innerHTML = "Bot Registration Sucess";
+                            document.getElementById("submitBtn").innerHTML = "Close";
+                        } else {
+                            document.getElementById("message").className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
+                            document.getElementById("message").innerHTML = JSON.parse(xhttp.responseText)["description"];
+                        }
+                        document.getElementById("submitBtn").disabled = false;
+                        document.getElementById("submitBtn").classList.remove("disabled");
                     }
                 }
+                xhttp.open("POST", "/bottoken");
+                xhttp.setRequestHeader("Content-Type", "application/json");
+                xhttp.setRequestHeader("Accept", "application/json");
+                xhttp.setRequestHeader("X-CSRF-Token",csrf_token);
+                xhttp.send(JSON.stringify(data));
+                
+                return false;
+            } else {
+                window.open('','_self').close();
             }
-            xhttp.open("POST", "/bottoken");
-            xhttp.setRequestHeader("Content-Type", "application/json");
-            xhttp.setRequestHeader("Accept", "application/json");
-            xhttp.setRequestHeader("X-CSRF-Token",csrf_token);
-            xhttp.send(JSON.stringify(data));
-            
-            return false;
         }
     </script>
 </html>
