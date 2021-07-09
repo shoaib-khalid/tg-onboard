@@ -45,7 +45,7 @@ class IndexController extends Controller
         if (!$satisfy) {
             $error="Requirement not satisfied";
             $description="userid => " . session('userid') . ",phonenumber => " . session('phonenumber') . ",botname => " . session('botname') . ",botuname => " . session('botuname');
-            return view("complete",[
+            return view("failed",[
                 'error' => $error,
                 'description' => $description
             ]);
@@ -55,7 +55,13 @@ class IndexController extends Controller
         if(!session('userid')) { $request->session()->put('userid',$data['userid']); } 
         if(!session('phonenumber')) { $request->session()->put('phonenumber',$data['phonenumber']); } 
         if(!session('botname')) { $request->session()->put('botname',$data['botname']); } 
-        if(!session('botuname')) { $request->session()->put('botuname',$data['botuname']); } 
+        if(!session('botuname')) { 
+            $revised = $data['botuname'];
+            if ($revised[0] !== '@') {
+                $revised = '@'.$revised;
+            }
+            $request->session()->put('botuname',$revised); 
+        }
 
         session()->save();
 
@@ -64,14 +70,7 @@ class IndexController extends Controller
         $botname = session('botname');
         $botuname = session('botuname');
         
-        // append @ to botusername
-        if ($botuname[0] !== '@') {
-            $botuname = '@'.$botuname;
-        }
-
-        // $description="userid => " . session('userid') . ",phonenumber => " . session('phonenumber') . ",botname => " . session('botname') . ",botuname => " . session('botuname');
-        // print $description;
-        // exit;
+        
 
         @include __DIR__.'/includes/ApiWrappers/Templates.php';
         @include __DIR__.'/includes/ApiWrappers/Start.php';
@@ -114,7 +113,7 @@ class IndexController extends Controller
             if (!preg_match($pattern, $phonenumber)){ // Outputs 1
                 $error="Wrong Phonenumber Format";
                 $description="Wrong Phonenumber Format";
-                return view("complete",[
+                return view("failed",[
                     'error' => $error,
                     'description' => $description
                 ]);

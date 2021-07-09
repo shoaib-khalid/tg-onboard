@@ -36,14 +36,17 @@ class BotTokenController extends Controller
 
             $url = config('app.url');
             $endpoint = $url . "/logout";
+            $header = [
+                "Content-type" => "application/json",
+                "X-CSRF-Token" => csrf_token()
+            ];
             $object = [
-                '_token' => csrf_token(),
                 'phonenumber' => $phonenumber
             ];
             
             \Log::channel('transaction')->info("TGO <- PATH " . $endpoint);
             \Log::channel('transaction')->info("TGO <- BODY " . json_encode($object));
-            $response = Http::post($endpoint, $object);
+            $response = Http::withHeaders($header)->post($endpoint, $object);
             \Log::channel('transaction')->info("TGO <- RESP " . $response);
         } 
 

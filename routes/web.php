@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\BotTokenController;
-use App\Http\Controllers\CompleteController;
+use App\Http\Controllers\FailedController;
 use Illuminate\Http\Request;
 
 /*
@@ -27,7 +27,7 @@ Route::post('/logout',[IndexController::class,'logout']);
 Route::get('/bottoken',[BotTokenController::class,'loadView']);
 Route::post('/bottoken',[BotTokenController::class,'setWebhook']);
 
-Route::get('/complete',[CompleteController::class,'loadView']);
+Route::get('/failed',[FailedController::class,'loadView']);
 
 /**
  * @hideFromAPIDocumentation

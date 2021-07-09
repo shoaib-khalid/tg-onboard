@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class CompleteController extends Controller
+class FailedController extends Controller
 {
     //
     function loadView(){
         $error="";
         $description="";
-        return view("complete",[
+        return view("failed",[
             'error' => $error,
             'description' => $description
         ]);

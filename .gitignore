@@ -15,4 +15,4 @@ yarn-error.log
 /.vscode
 
 /public/MadelineProto.log
-/public/session/*
+/public/sessions/*

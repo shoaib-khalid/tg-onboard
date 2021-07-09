@@ -21,15 +21,15 @@
                     </p>
                 </div>
             <div>
-            @if ($message !== "")
-                @if ($status == "success")
+                @if ($message === "")
+                <p class="" id="message">
+                @elseif ($status == "success")
                 <p class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5" id="message">
                 @else
                 <p class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" id="message">
                 @endif
                     {!! $message !!}
                 </p>
-            @endif
             </div>
             <form onsubmit="loadDoc(); return false;">
                 @csrf
@@ -50,29 +50,31 @@
     <script>
         function loadDoc() {
 
-            $botuname = document.getElementById("botuname").value;
-            $userid = document.getElementById("userid").value;
-            $token = document.getElementById("token").value;
+            botuname = document.getElementById("botuname").value;
+            userid = document.getElementById("userid").value;
+            token = document.getElementById("token").value;
 
-            if (!$botuname || !$userid  || !$token ) {
+            if (!botuname || !userid  || !token ) {
+                document.getElementById("message").className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                 document.getElementById("message").innerHTML = "All field are required";
                 return false;
             }
 
             var data = {
-                botuname : $botuname,
-                userid : $userid,
-                token : $token
+                botuname : botuname,
+                userid : userid,
+                token : token
             };
-            
+
+            var csrf_token =  "{{ csrf_token() }}";
 
             const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange  = function() {
                 if(xhttp.readyState == 4) {
-                    if (xhttp.status == 200)
+                    if (xhttp.status == 200) {
                         document.getElementById("message").className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
                         document.getElementById("message").innerHTML = "Bot Registration Sucess";
-                    else {
+                    } else {
                         document.getElementById("message").className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                         document.getElementById("message").innerHTML = JSON.parse(xhttp.responseText)["description"];
                     }
@@ -81,7 +83,10 @@
             xhttp.open("POST", "/bottoken");
             xhttp.setRequestHeader("Content-Type", "application/json");
             xhttp.setRequestHeader("Accept", "application/json");
+            xhttp.setRequestHeader("X-CSRF-Token",csrf_token);
             xhttp.send(JSON.stringify(data));
+            
+            return false;
         }
     </script>
 </html>

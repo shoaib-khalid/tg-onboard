@@ -32,13 +32,8 @@
                     <p>Description - {{ $description }}</p>
                 </div>
                 @else
-                <div class="mt-6 text-center text-2xl font-bold text-gray-900">
-                    <h1>Congratulation !!</h1>
-                    <p class="label block w-full">Your telegram bot have been completed</p>
-                </div>
-                <div class="text-center bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5">
-                    <p>You can try to have a chat with your telegram bot @ telegram now.
-                       You can close this window now or it will be closed automatically in 1 minutes</p>
+                <div class="mt-6 text-center text-3x1 font-extrabold text-gray-1000">
+                    <h1>404</h1>
                 </div>
                 @endif
             </div>
