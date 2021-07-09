@@ -83,7 +83,9 @@
                 let status = false;
                 let phonenumber = document.getElementById("phonenumber");
                 let phonenumber_msg = document.getElementById("phonenumber_msg");
+                let cont_phonenumber_msg = document.getElementById("cont_phonenumber_msg");
 
+                cont_phonenumber_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                 const regex = new RegExp('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$');
                 if (phonenumber.value == "") {
                     phonenumber_msg.innerHTML = "Phonenumber can't be empty";
@@ -95,8 +97,9 @@
                     phonenumber_msg.innerHTML = "Not a valid phonenumber format";
                     cont_phonenumber_msg.style.display = "block";
                 } else {
-                    phonenumber_msg.innerHTML = "Good";
+                    // phonenumber_msg.innerHTML = "Good";
                     cont_phonenumber_msg.style.display = "none";
+                    // cont_phonenumber_msg.className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
                     status = true;
                 }
                 phonenumber.value = (phonenumber.value).replace(/[^0-9]/g, '');
@@ -108,13 +111,16 @@
                 let status = false;
                 let botname = document.getElementById("botname");
                 let botname_msg = document.getElementById("botname_msg");
+                let cont_botname_msg = document.getElementById("cont_botname_msg");
 
+                cont_botname_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                 if (botname.value == "") {
                     botname_msg.innerHTML = "Bot name can't be empty";
                     cont_botname_msg.style.display = "block";
                 } else {
-                    botname_msg.innerHTML = "Good";
+                    // botname_msg.innerHTML = "Good";
                     cont_botname_msg.style.display = "none";
+                    // cont_botname_msg.className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
                     status = true;
                 }
                 return status;
@@ -124,11 +130,13 @@
                 let status = false;
                 let botuname = document.getElementById("botuname");
                 let botuname_msg = document.getElementById("botuname_msg");
+                let cont_botuname_msg = document.getElementById("cont_botuname_msg");
 
                 const ending_name = new RegExp('.*bot$','i');
                 const special_char = new RegExp('^[@]{0,1}[a-z0-9]+$','i');
                 const first_char = new RegExp('^[@]{0,1}[a-z][a-z0-9]+$','i');
 
+                cont_botuname_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                 if (botuname.value == "") {
                     botuname_msg.innerHTML = "Bot username can't be empty";
                     cont_botuname_msg.style.display = "block";
@@ -142,9 +150,10 @@
                     botuname_msg.innerHTML = "First character can't be a number";
                     cont_botuname_msg.style.display = "block";
                 } else {
-                    botuname_msg.innerHTML = "Good";
-                    cont_botuname_msg.style.display = "none";
                     status = true;
+                    // botuname_msg.innerHTML = "Good";
+                    cont_botuname_msg.style.display = "none";
+                    // cont_botuname_msg.className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
                 }
                 return status;
             }

@@ -47,7 +47,8 @@ class IndexController extends Controller
             $description="userid => " . session('userid') . ",phonenumber => " . session('phonenumber') . ",botname => " . session('botname') . ",botuname => " . session('botuname');
             return view("failed",[
                 'error' => $error,
-                'description' => $description
+                'description' => $description,
+                'userid' => session('userid')
             ]);
         };
 
@@ -55,6 +56,7 @@ class IndexController extends Controller
         if(!session('userid')) { $request->session()->put('userid',$data['userid']); } 
         if(!session('phonenumber')) { $request->session()->put('phonenumber',$data['phonenumber']); } 
         if(!session('botname')) { $request->session()->put('botname',$data['botname']); } 
+        $revised = "";
         if(!session('botuname')) { 
             $revised = $data['botuname'];
             if ($revised[0] !== '@') {
@@ -69,8 +71,7 @@ class IndexController extends Controller
         $phonenumber = session('phonenumber');
         $botname = session('botname');
         $botuname = session('botuname');
-        
-        
+        $botunamenoalias = ltrim($botuname, '@');
 
         @include __DIR__.'/includes/ApiWrappers/Templates.php';
         @include __DIR__.'/includes/ApiWrappers/Start.php';
@@ -85,7 +86,27 @@ class IndexController extends Controller
         $MadelineProto->start();
         $me = $MadelineProto->getSelf();
         // $MadelineProto->logger($me);
-        
+
+        $Bool = $MadelineProto->account->checkUsername(['username' => $botunamenoalias]);
+
+        if ($Bool === false) {
+            $error="Bot Username already exists";
+            $description="Please choose another bot Username";
+            $uid = session('userid');
+
+            $request->session()->forget('userid');
+            $request->session()->forget('phonenumber');
+            $request->session()->forget('botname');
+            $request->session()->forget('botuname');
+            session_unset();
+
+            return view("failed",[
+                'error' => $error,
+                'description' => $description,
+                'userid' => $uid
+            ]);
+        }
+
         if (!$me['bot']) {
             $MadelineProto->messages->sendMessage(['peer' => '@BotFather', 'message' => "/start"]);
             sleep(2);
@@ -115,7 +136,8 @@ class IndexController extends Controller
                 $description="Wrong Phonenumber Format";
                 return view("failed",[
                     'error' => $error,
-                    'description' => $description
+                    'description' => $description,
+                    'userid' => session('userid')
                 ]);
             }    
         

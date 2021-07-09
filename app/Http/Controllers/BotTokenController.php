@@ -157,12 +157,12 @@ class BotTokenController extends Controller
 
         }
 
-
         // log everything else out
         $request->session()->forget('userid');
         $request->session()->forget('phonenumber');
         $request->session()->forget('botname');
         $request->session()->forget('botuname');
+        session_unset();
 
         return response()->json();
     }

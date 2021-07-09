@@ -36,6 +36,8 @@
                     <h1>404</h1>
                 </div>
                 @endif
+                
+                <a class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded" href="{{ config('app.url') . '/?userid=' . $userid }}">Go Back</a>
             </div>
         </div>
     </div>

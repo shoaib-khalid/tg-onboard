@@ -12,7 +12,8 @@ class FailedController extends Controller
         $description="";
         return view("failed",[
             'error' => $error,
-            'description' => $description
+            'description' => $description,
+            'userid' => ''
         ]);
     }
 }
