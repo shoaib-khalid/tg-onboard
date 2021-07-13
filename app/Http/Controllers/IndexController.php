@@ -77,11 +77,11 @@ class IndexController extends Controller
         @include __DIR__.'/includes/ApiWrappers/Start.php';
         @include __DIR__.'/includes/Wrappers/Templates.php';
 
-        // @include './Settings/Templates.php';
+        @include __DIR__.'/includes/Settings/Templates.php';
         // @include './MTProtoTools/MTProto.php';
         // include './MTProtoTools/ResponseInfo.php';
         // include './MTProtoTools/MyTelegramOrgWrapper.php';
-
+        
         $MadelineProto = new \danog\MadelineProto\API('./sessions/session.' . $phonenumber);
         $MadelineProto->start();
         $me = $MadelineProto->getSelf();

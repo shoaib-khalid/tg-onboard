@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\BotTokenController;
 use App\Http\Controllers\FailedController;
-use App\Http\Controllers\CheckUsernameController;
+// use App\Http\Controllers\CheckUsernameController;
 use Illuminate\Http\Request;
 
 /*
@@ -31,7 +31,7 @@ Route::post('/bottoken',[BotTokenController::class,'setWebhook']);
 Route::get('/failed',[FailedController::class,'loadView']);
 
 // Disabled for now
-Route::get('/checkusername',[CheckUsernameController::class,'check']);
+// Route::get('/checkusername',[CheckUsernameController::class,'check']);
 
 /**
  * @hideFromAPIDocumentation

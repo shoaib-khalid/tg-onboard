@@ -15,13 +15,14 @@
         <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div class="max-w-md w-full space-y-8">
                 <div>
-                    <img class="mx-auto h-30 w-auto" src="https://symplified.biz/assets/SYMplified%20_%20Simply%20built%20for%20all_files/logo-header.png" alt="Workflow">
+                    <img class="mx-auto h-30 w-auto" src="{{ asset('images/logo-header.png') }}" alt="Workflow">
                     <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                         Telegram Onboard by Symplified
                     </h2>
                     <p class="mt-2 text-center text-sm text-gray-600">
-                        <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-                        Do not have your own telegram bot yet ?<br> Create your own telegram bot now
+                        Do not have your own telegram bot yet ? <br>
+                        <a href="https://symplified.biz" target="_blank" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        Go to Symplified Merchant Portal to Register
                         </a>
                     </p>
                 </div>

@@ -32,14 +32,14 @@
             <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
                 <div class="max-w-md w-full space-y-8">
                     <div>
-                        <img class="mx-auto h-30 w-auto" src="https://symplified.biz/assets/SYMplified%20_%20Simply%20built%20for%20all_files/logo-header.png" alt="Workflow">
+                        <img class="mx-auto h-30 w-auto" src="{{ asset('images/logo-header.png') }}" alt="Workflow">
                         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                            Telegram Onboard by Symplified
+                            Bot Creation by Symplified
                         </h2>
                         <p class="mt-2 text-center text-sm text-gray-600">
-                            Or
-                            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-                            Set Your Bot Webhook With Us
+                            Already have a telegram bot ?
+                            <a href="/bottoken" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            Onboard Your Telegram Bot With Us
                             </a>
                         </p>
                     </div>
@@ -93,6 +93,9 @@
                 } else if (phonenumber.value.length < 7) {
                     phonenumber_msg.innerHTML = "Not a valid phonenumber format (minimum length does not meet)";
                     cont_phonenumber_msg.style.display = "block";
+                } else if (phonenumber.value.length > 15){
+                    botuname_msg.innerHTML = "Bot name length must not exceed 15 digits";
+                    cont_botuname_msg.style.display = "block";
                 } else if (!regex.test(phonenumber.value)){
                     phonenumber_msg.innerHTML = "Not a valid phonenumber format";
                     cont_phonenumber_msg.style.display = "block";
@@ -117,6 +120,9 @@
                 if (botname.value == "") {
                     botname_msg.innerHTML = "Bot name can't be empty";
                     cont_botname_msg.style.display = "block";
+                } else if (botname.value.length > 50){
+                    botuname_msg.innerHTML = "Bot name length must not exceed 50 character";
+                    cont_botuname_msg.style.display = "block";
                 } else {
                     // botname_msg.innerHTML = "Good";
                     cont_botname_msg.style.display = "none";
@@ -139,6 +145,9 @@
                 cont_botuname_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                 if (botuname.value == "") {
                     botuname_msg.innerHTML = "Bot username can't be empty";
+                    cont_botuname_msg.style.display = "block";
+                } else if (botuname.value.length > 50){
+                    botuname_msg.innerHTML = "Bot username length must not exceed 50 character";
                     cont_botuname_msg.style.display = "block";
                 } else if (!ending_name.test(botuname.value)){
                     botuname_msg.innerHTML = "Bot username must end with `bot`";
