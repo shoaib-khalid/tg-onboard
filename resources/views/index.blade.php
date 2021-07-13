@@ -38,7 +38,7 @@
                         </h2>
                         <p class="mt-2 text-center text-sm text-gray-600">
                             Already have a telegram bot ?
-                            <a href="/bottoken" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            <a href="/bottoken?userid={{ $userid }}" class="font-medium text-indigo-600 hover:text-indigo-500">
                             Onboard Your Telegram Bot With Us
                             </a>
                         </p>
@@ -90,6 +90,9 @@
                 if (phonenumber.value == "") {
                     phonenumber_msg.innerHTML = "Phonenumber can't be empty";
                     cont_phonenumber_msg.style.display = "block";
+                } else if (phonenumber.value[0] !== "+") {
+                    phonenumber_msg.innerHTML = "Require phonenumber country code. eg: +60";
+                    cont_phonenumber_msg.style.display = "block";
                 } else if (phonenumber.value.length < 7) {
                     phonenumber_msg.innerHTML = "Not a valid phonenumber format (minimum length does not meet)";
                     cont_phonenumber_msg.style.display = "block";
@@ -105,7 +108,7 @@
                     // cont_phonenumber_msg.className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
                     status = true;
                 }
-                phonenumber.value = (phonenumber.value).replace(/[^0-9]/g, '');
+                // phonenumber.value = (phonenumber.value).replace(/[^0-9]/g, '');
 
                 return status;
             }
@@ -177,8 +180,12 @@
                 var status_botname = check_botname();
                 var status_botuname = check_botuname();
 
-                if (status_phonenumber == true && status_botname == true && status_botuname == true)
+                if (status_phonenumber == true && status_botname == true && status_botuname == true){
                      status = true;
+                } else {
+                    document.getElementById("submitBtn").disabled = false;
+                    document.getElementById("submitBtn").classList.remove("disabled");
+                }
 
                 return status;
             }

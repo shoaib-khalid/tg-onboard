@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class IndexController extends Controller
 {
@@ -54,7 +55,10 @@ class IndexController extends Controller
 
         // set to sessions
         if(!session('userid')) { $request->session()->put('userid',$data['userid']); } 
-        if(!session('phonenumber')) { $request->session()->put('phonenumber',$data['phonenumber']); } 
+        if(!session('phonenumber')) { 
+            $sanitised_phonenumber = preg_replace('/[^0-9]/', '', $data['phonenumber']);
+            $request->session()->put('phonenumber',$sanitised_phonenumber); 
+        } 
         if(!session('botname')) { $request->session()->put('botname',$data['botname']); } 
         $revised = "";
         if(!session('botuname')) { 
@@ -78,6 +82,7 @@ class IndexController extends Controller
         @include __DIR__.'/includes/Wrappers/Templates.php';
 
         @include __DIR__.'/includes/Settings/Templates.php';
+        @include __DIR__.'/includes/Settings/Lang.php';
         // @include './MTProtoTools/MTProto.php';
         // include './MTProtoTools/ResponseInfo.php';
         // include './MTProtoTools/MyTelegramOrgWrapper.php';
@@ -117,10 +122,10 @@ class IndexController extends Controller
             $MadelineProto->messages->sendMessage(['peer' => '@BotFather', 'message' => $botuname]);
             sleep(5);
         } else {
-            return redirect('/bottoken?status=failed');
+            return redirect("/bottoken?userid=$userid&status=failed");
         }
 
-        return redirect('/bottoken?status=success');
+        return redirect("/bottoken?userid=$userid&status=success");
     }
 
     function logout(Request $request){
@@ -156,7 +161,7 @@ class IndexController extends Controller
         
             exec("kill -9 $pid");
         
-            foreach(glob("./sessions/session.$phonenumber*") as $f) {
+            foreach(glob(public_path()."/sessions/session.$phonenumber*") as $f) {
                 unlink($f);
             }
         

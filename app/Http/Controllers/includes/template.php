@@ -18,12 +18,6 @@
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Bot Creation by Symplified
             </h2>
-            <p class="mt-2 text-center text-sm text-gray-600">
-                Already have a telegram bot ?
-                <a href="/bottoken" class="font-medium text-indigo-600 hover:text-indigo-500">
-                Onboard Your Telegram Bot With Us
-                </a>
-            </p>
         </div>
         <p>%s</p>
         <form method="POST" onsubmit="return validate_form()">
@@ -32,6 +26,7 @@
                 %s
             </div>
             <br>
+            <a onclick="goBack()" class="cursor-pointer bg-gray-500 hover:bg-gray-400 text-white font-bold py-2.5 px-4 rounded">Back</a> &nbsp;
             <button id="submitBtn" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded" type="submit"/>%s</button>
         </form>
     </div>
@@ -43,6 +38,9 @@
             document.getElementById("submitBtn").classList.add("disabled");
 
             return true;
+        }
+        function goBack() {
+            window.history.back();
         }
 </script>
 </body>

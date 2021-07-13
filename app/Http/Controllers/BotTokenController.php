@@ -11,10 +11,16 @@ class BotTokenController extends Controller
     //
     function loadView(Request $request) {
 
+        $userid = $request->userid;
         $data = $request->input();
 
         $status = "";
         $message = "";
+
+        if (!isset($userid)){
+            $status = 'failed';
+            $message = 'Missing user/merchant id. Close this window and try again from Symplified Merchant Portal';
+        }
 
         if (isset($data['status'])){
             if ($data['status'] == 'success') {
@@ -30,29 +36,9 @@ class BotTokenController extends Controller
              }
         }
 
-        // if there's a madeline login session, log it out
-        if(session('phonenumber')) { 
-            $phonenumber = session('phonenumber'); 
-
-            $url = config('app.url');
-            $endpoint = $url . "/logout";
-            $header = [
-                "Content-type" => "application/json",
-                "X-CSRF-Token" => csrf_token()
-            ];
-            $object = [
-                'phonenumber' => $phonenumber
-            ];
-            
-            \Log::channel('transaction')->info("TGO <- PATH " . $endpoint);
-            \Log::channel('transaction')->info("TGO <- BODY " . json_encode($object));
-            $response = Http::withHeaders($header)->post($endpoint, $object);
-            \Log::channel('transaction')->info("TGO <- RESP " . $response);
-        } 
-
         return view("bottoken",[
             'botuname' => session('botuname'),
-            'userid' => session('userid'),
+            'userid' => $userid,
             'message' => $message,
             'status' => $status
         ]);
@@ -89,6 +75,7 @@ class BotTokenController extends Controller
         }
 
         $botuname = $request['botuname'];
+        $boturl = "https://t.me/". ltrim($request['botuname'],'@');
         $userid = $request['userid'];
         $token = $request['token'];
 
@@ -157,6 +144,26 @@ class BotTokenController extends Controller
 
         }
 
+        // if there's a madeline login session, log it out
+        if(session('phonenumber')) { 
+            $phonenumber = session('phonenumber'); 
+
+            $url = config('app.url');
+            $endpoint = $url . "/logout";
+            $header = [
+                "Content-type" => "application/json",
+                "X-CSRF-Token" => csrf_token()
+            ];
+            $object = [
+                'phonenumber' => $phonenumber
+            ];
+            
+            \Log::channel('transaction')->info("TGO <- PATH " . $endpoint);
+            \Log::channel('transaction')->info("TGO <- BODY " . json_encode($object));
+            $response = Http::withHeaders($header)->post($endpoint, $object);
+            \Log::channel('transaction')->info("TGO <- RESP " . $response);
+        } 
+
         // log everything else out
         $request->session()->forget('userid');
         $request->session()->forget('phonenumber');
@@ -164,6 +171,12 @@ class BotTokenController extends Controller
         $request->session()->forget('botuname');
         session_unset();
 
-        return response()->json();
+        return response()->json([
+            'system' => 'telegram-onboard',
+            'action' => 'set botToken',
+            'status' => true,
+            'system_response' => 'success',
+            'description' => "Bot registration sucess. To access your $botuname go to <a href=\"$boturl\">$boturl</a>. Share with it others"
+        ],200);
     }
 }

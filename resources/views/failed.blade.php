@@ -33,12 +33,15 @@
                     <p>Description - {{ $description }}</p>
                 </div>
                 @else
-                <div class="mt-6 text-center text-3x1 font-extrabold text-gray-1000">
-                    <h1>404</h1>
+                <div class="mt-6 text-center text-2xl font-bold text-gray-900">
+                    <h1>Page not Found</h1>
+                    <p class="label block w-full">404</p>
+                    <br>
+                    <br>
                 </div>
                 @endif
                 
-                <a class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded" href="{{ config('app.url') . '/?userid=' . $userid }}">Go Back</a>
+                <a class="cursor-pointer bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded" href="{{ config('app.url') . '/?userid=' . $userid }}">Go Back</a>
             </div>
         </div>
     </div>
