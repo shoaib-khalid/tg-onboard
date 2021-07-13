@@ -87,7 +87,6 @@ trait Templates
         }
         $title = \htmlentities($title);
         $message = \htmlentities($message);
-        $form .= '<input name="_token" value="'.csrf_token().'" type="hidden">';
         return getOutputBufferStream()->write($this->webEchoTemplate("$title<br><b>$message</b>", $form));
     }
     /**

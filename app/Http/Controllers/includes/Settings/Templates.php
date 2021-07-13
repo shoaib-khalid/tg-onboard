@@ -42,7 +42,7 @@ class Templates extends SettingsAbstract
     public function __construct()
     {
         ob_start();
-        @include __DIR__.('/../template.html');
+        @include __DIR__.('/../template.php');
         $content = ob_get_contents();
         ob_end_clean();
 

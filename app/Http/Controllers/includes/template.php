@@ -27,7 +27,8 @@
         </div>
         <p>%s</p>
         <form method="POST" onsubmit="return validate_form()">
-            <div>
+            <input name="_token" value="<?php print csrf_token() ?>" type="hidden">
+            <div class="border border-gray-300 w-min">
                 %s
             </div>
             <br>

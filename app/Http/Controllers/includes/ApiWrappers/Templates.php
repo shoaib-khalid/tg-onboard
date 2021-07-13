@@ -182,7 +182,6 @@ trait Templates
                 }
             }
         }
-        $form .= '<input name="_token" value="'.csrf_token().'" type="hidden">';
         return getOutputBufferStream()->write($this->webAPIEchoTemplate($title, $form));
     }
 }
