@@ -8,6 +8,9 @@
         button.disabled:hover {
             cursor:not-allowed
         }
+        #cont_token_msg, #cont_botuname_msg {
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-blue-700">
@@ -39,13 +42,21 @@
             </div>
             <form onsubmit="loadDoc(); return false;">
                 @csrf
-                <label class="label block w-full" for="phonenumber">Bot token</label>  
+                <label class="label block w-full" for="token">Bot token</label>  
                 <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" type="text" id="token" name="token" placeholder="example: 99853088:AAFfd36hf6btwTjGNF1R_9_gt48tgdhtzRK8"/> <br/>
-                
-                <label class="label block w-full" for="phonenumber">Bot Username</label>  
-                <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" type="text" id="botuname" name="botuname" value="{{$botuname}}" placeholder="eg. @SymplifiedBot"/> <br/>
+                <div id="cont_token_msg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" role="error">
+                    <strong class="font-bold">Alert!</strong>
+                    <span id="token_msg"></span> <br>
+                </div>
 
-                <!-- <label class="label block w-full" for="phonenumber">Merchant Id</label>   -->
+                <label class="label block w-full" for="botuname">Bot Username</label>  
+                <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" type="text" id="botuname" name="botuname" value="{{$botuname}}" placeholder="eg. @SymplifiedBot" onfocusout="check_botuname()"/> <br/>
+                <div id="cont_botuname_msg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" role="error">
+                    <strong class="font-bold">Alert!</strong>
+                    <span id="botuname_msg"></span> <br>
+                </div>
+
+                <!-- <label class="label block w-full" for="userid">Merchant Id</label>   -->
                 <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" type="hidden" id="userid" name="userid" value="{{$userid}}" placeholder="0644ddb5-f7af-4700-b4b4-59dc44f90d88"/> <br/>
                 
                 <button id="submitBtn" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded">Submit</button>
@@ -59,17 +70,29 @@
             action = document.getElementById("submitBtn").innerHTML;
 
             if (action === "Submit") {
-
+                let status = false;
                 botuname = document.getElementById("botuname").value;
                 userid = document.getElementById("userid").value;
                 token = document.getElementById("token").value;
 
+                // check whether input in empty
+                document.getElementById("message").style.display = "none";
                 if (!botuname || !userid  || !token ) {
+                    document.getElementById("message").style.display = "block";
                     document.getElementById("message").className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                     document.getElementById("message").innerHTML = "All field are required";
                     return false;
                 }
 
+                // check botusername validity
+                var status_botuname = check_botuname();
+                if (status_botuname !== true) {
+                    document.getElementById("submitBtn").disabled = false;
+                    document.getElementById("submitBtn").classList.remove("disabled");
+                    return false;
+                }
+
+                // disabled submit button (to avoid double request by users)
                 document.getElementById("submitBtn").disabled = true;
                 document.getElementById("submitBtn").classList.add("disabled");
 
@@ -87,11 +110,14 @@
                         if (xhttp.status == 200) {
                             document.getElementById("message").className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
                             document.getElementById("message").innerHTML = JSON.parse(xhttp.responseText)["description"];
+                            // change submit button to close button
                             document.getElementById("submitBtn").innerHTML = "Close";
                         } else {
                             document.getElementById("message").className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                             document.getElementById("message").innerHTML = JSON.parse(xhttp.responseText)["description"];
                         }
+                        // re-display close button
+                        document.getElementById("message").style.display = "block";
                         document.getElementById("submitBtn").disabled = false;
                         document.getElementById("submitBtn").classList.remove("disabled");
                     }
@@ -106,6 +132,41 @@
             } else {
                 window.open('','_self').close();
             }
+        }
+
+        function check_botuname() {
+            let status = false;
+            let botuname = document.getElementById("botuname");
+            let botuname_msg = document.getElementById("botuname_msg");
+            let cont_botuname_msg = document.getElementById("cont_botuname_msg");
+
+            const ending_name = new RegExp('.*bot$','i');
+            const special_char = new RegExp('^[@]{0,1}[a-z0-9]+$','i');
+            const first_char = new RegExp('^[@]{0,1}[a-z][a-z0-9]+$','i');
+
+            cont_botuname_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
+            if (botuname.value == "") {
+                botuname_msg.innerHTML = "Bot username can't be empty";
+                cont_botuname_msg.style.display = "block";
+            } else if (botuname.value.length > 50){
+                botuname_msg.innerHTML = "Bot username length must not exceed 50 character";
+                cont_botuname_msg.style.display = "block";
+            } else if (!ending_name.test(botuname.value)){
+                botuname_msg.innerHTML = "Bot username must end with `bot`";
+                cont_botuname_msg.style.display = "block";
+            } else if (!special_char.test(botuname.value)){
+                botuname_msg.innerHTML = "Special Character not allowed";
+                cont_botuname_msg.style.display = "block";
+            } else if (!first_char.test(botuname.value)){
+                botuname_msg.innerHTML = "First character can't be a number";
+                cont_botuname_msg.style.display = "block";
+            } else {
+                status = true;
+                // botuname_msg.innerHTML = "Good";
+                cont_botuname_msg.style.display = "none";
+                // cont_botuname_msg.className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
+            }
+            return status;
         }
     </script>
 </html>

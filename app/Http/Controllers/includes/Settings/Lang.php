@@ -175,7 +175,7 @@ class Lang
     'apiChooseManualAuto' => 'Do you want to enter the API id and the API hash manually or automatically? (m/a)',
     'apiChooseManualAutoWeb' => 'Do you want to enter the API id and the API hash manually or automatically?',
     'apiChooseManualAutoTip' => 'Note that you can also provide them directly in the code using the settings: %s',
-    'apiChooseManualAutoTipWeb' => 'Note that you can also provide them directly in the code using the <a target="_blank" href="%s">settings</a>.',
+    'apiChooseManualAutoTipWeb' => 'Note that you can also provide them directly in the code using the <a class="underline text-blue-500" target="_blank" href="%s">settings</a>.',
     'apiChoosePrompt' => 'Your choice (m/a): ',
     'apiChooseAutomaticallyWeb' => 'Automatically',
     'apiChooseManuallyWeb' => 'Manually',

@@ -63,7 +63,7 @@
                             <span id="botname_msg"></span> <br>
                         </div>
                         
-                        <label class="label block w-full" for="botname">What name would you want to give your Telegram</label> 
+                        <label class="label block w-full" for="botuname">What name would you want to give your Telegram</label> 
                         <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" id="botuname" name="botuname" type="text" placeholder="eg. @SymplifiedBot" onfocusout="check_botuname()"/>
                         <div id="cont_botuname_msg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" role="error">
                             <strong class="font-bold">Alert!</strong>

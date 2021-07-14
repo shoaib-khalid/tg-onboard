@@ -75,7 +75,10 @@ class BotTokenController extends Controller
         }
 
         $botuname = $request['botuname'];
-        $boturl = "https://t.me/". ltrim($request['botuname'],'@');
+        if ($botuname[0] !== "@") {
+            $botuname = "@".$botuname;
+        }
+        $boturl = "https://t.me/". ltrim($botuname,'@');
         $userid = $request['userid'];
         $token = $request['token'];
 
@@ -176,7 +179,7 @@ class BotTokenController extends Controller
             'action' => 'set botToken',
             'status' => true,
             'system_response' => 'success',
-            'description' => "Bot registration sucess. To access your $botuname go to <a href=\"$boturl\">$boturl</a>. Share with it others"
+            'description' => "Bot registration sucess. To access your $botuname go to <a class=\"underline\" href=\"$boturl\">$boturl</a>. Share with it others"
         ],200);
     }
 }
