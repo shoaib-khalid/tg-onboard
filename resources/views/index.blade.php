@@ -119,12 +119,17 @@
                 let botname_msg = document.getElementById("botname_msg");
                 let cont_botname_msg = document.getElementById("cont_botname_msg");
 
+                const special_char = new RegExp('^[@]{0,1}[a-z0-9]+$','i');
+
                 cont_botname_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                 if (botname.value == "") {
                     botname_msg.innerHTML = "Bot name can't be empty";
                     cont_botname_msg.style.display = "block";
                 } else if (botname.value.length > 50){
                     botuname_msg.innerHTML = "Bot name length must not exceed 50 character";
+                    cont_botuname_msg.style.display = "block";
+                } else if (!special_char.test(botuname.value)){
+                    botuname_msg.innerHTML = "Special Character not allowed";
                     cont_botuname_msg.style.display = "block";
                 } else {
                     // botname_msg.innerHTML = "Good";

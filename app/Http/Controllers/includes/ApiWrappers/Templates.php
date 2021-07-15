@@ -177,7 +177,7 @@ trait Templates
                         }
 
                         // $form .= "$desc<br><input type='text' name='$field' required/><br><br>";
-                        $form .= "$description<br><input type='text' value='$predefval' name='$field' readonly required/><br><br>";
+                        $form .= "$description<br><input type='text' value='$botname' name='$field' readonly required/><br><br>";
                     }
                 }
             }
