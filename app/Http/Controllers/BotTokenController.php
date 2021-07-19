@@ -148,20 +148,22 @@ class BotTokenController extends Controller
         }
 
         // if there's a madeline login session, log it out
-        if(session('phonenumber')) { 
+        if(session('phonenumber')) {
             $phonenumber = session('phonenumber'); 
 
             $url = config('app.url');
             $endpoint = $url . "/logout";
             $header = [
                 "Content-type" => "application/json",
-                "X-CSRF-Token" => csrf_token()
+                "Accept" => "*/*"
             ];
             $object = [
-                'phonenumber' => $phonenumber
+                'phonenumber' => $phonenumber,
+                '_token' => csrf_token()
             ];
             
             \Log::channel('transaction')->info("TGO <- PATH " . $endpoint);
+            \Log::channel('transaction')->info("TGO <- HEADER " . json_encode($header));
             \Log::channel('transaction')->info("TGO <- BODY " . json_encode($object));
             $response = Http::withHeaders($header)->post($endpoint, $object);
             \Log::channel('transaction')->info("TGO <- RESP " . $response);

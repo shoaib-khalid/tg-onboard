@@ -76,6 +76,9 @@ trait Templates
 
         $botuname = "";
         if (session('botuname')) $botuname = session('botuname');
+        if ($botuname[0] === '@'){
+            $botuname = ltrim($botuname, '@');
+        }
 
         $phonenumber = "";
         if (session('phonenumber')) $phonenumber = session('phonenumber');
@@ -104,7 +107,7 @@ trait Templates
                     $title = Lang::$current_lang['apiAutoWeb'];
                     $title .= "<br><b>$message</b>";
                     $phone = \htmlentities(Lang::$current_lang['loginUserPhoneWeb']);
-                    $form = "<input type='text' name='phone_number' value='$phonenumber' placeholder='$phone' required readonly/>";
+                    $form = "<input type='text' class='input input-text-1' name='phone_number' value='$phonenumber' placeholder='$phone' required readonly/>";
                 }
             } else {
                 if ($message) {
@@ -158,8 +161,8 @@ trait Templates
                     } elseif ($field === 'app_desc') {
                         // $form .= "$desc<br><textarea name='$field' required></textarea><br><br>";
                         // $form .= "$desc<br><textarea name='$field' required></textarea><br><br>";
-                        $form .= "<textarea name='$field' hidden required>$botname</textarea>";
-                        $form .= "<input type='button' onclick=\"window.location.href='https://tgw.symplified.biz/kbot/telegram-onboard/reset';\" value='Back' />";
+                        $form .= "<textarea name='$field' required hidden>$botname</textarea>";
+                        // $form .= "<input type='button' onclick=\"window.location.href='https://tgw.symplified.biz/kbot/telegram-onboard/reset';\" value='Back' />";
                     } else {
                         $predefval="";
                         $placeholder="";
@@ -172,12 +175,12 @@ trait Templates
                             $predefval = $botuname;
                             $description = "Your Telegram Bot Name";
                         } else if ($field === 'app_url') {
-                            $predefval = "t.me/".$botuname;
+                            $predefval = "https://t.me/".$botuname;
                             $description = "Your Telegram Bot URL";
                         }
 
                         // $form .= "$desc<br><input type='text' name='$field' required/><br><br>";
-                        $form .= "$description<br><input type='text' value='$botname' name='$field' readonly required/><br><br>";
+                        $form .= "<div class=\"min-w-full\">$description</div><input class=\"input input-text-1\" type='text' value='$predefval' name='$field' readonly required/><br>";
                     }
                 }
             }

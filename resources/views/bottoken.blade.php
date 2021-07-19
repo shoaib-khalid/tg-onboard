@@ -43,21 +43,21 @@
             <form onsubmit="loadDoc(); return false;">
                 @csrf
                 <label class="label block w-full" for="token">Bot token</label>  
-                <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" type="text" id="token" name="token" placeholder="example: 99853088:AAFfd36hf6btwTjGNF1R_9_gt48tgdhtzRK8"/> <br/>
+                <input class="input input-text-1" type="text" id="token" name="token" placeholder="example: 99853088:AAFfd36hf6btwTjGNF1R_9_gt48tgdhtzRK8"/> <br/>
                 <div id="cont_token_msg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" role="error">
                     <strong class="font-bold">Alert!</strong>
                     <span id="token_msg"></span> <br>
                 </div>
 
                 <label class="label block w-full" for="botuname">Bot Username</label>  
-                <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" type="text" id="botuname" name="botuname" value="{{$botuname}}" placeholder="eg. @SymplifiedBot" onfocusout="check_botuname()"/> <br/>
+                <input class="input input-text-1" type="text" id="botuname" name="botuname" value="{{$botuname}}" placeholder="eg. @SymplifiedBot" onfocusout="check_botuname()"/> <br/>
                 <div id="cont_botuname_msg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" role="error">
                     <strong class="font-bold">Alert!</strong>
                     <span id="botuname_msg"></span> <br>
                 </div>
 
                 <!-- <label class="label block w-full" for="userid">Merchant Id</label>   -->
-                <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" type="hidden" id="userid" name="userid" value="{{$userid}}" placeholder="0644ddb5-f7af-4700-b4b4-59dc44f90d88"/> <br/>
+                <input class="input input-text-1" type="hidden" id="userid" name="userid" value="{{$userid}}" placeholder="0644ddb5-f7af-4700-b4b4-59dc44f90d88"/> <br/>
                 
                 <button id="submitBtn" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded">Submit</button>
             </form>

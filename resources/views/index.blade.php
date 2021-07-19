@@ -49,7 +49,7 @@
                         @csrf
 
                         <label class="label block w-full" for="phonenumber">Tell us the phone number would you want to associate with this Telegram Bot</label>  
-                        <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" id="phonenumber" name="phonenumber" type="text" placeholder="eg: +60123456789" onfocusout="check_phonenumber()"/> 
+                        <input class="input input-text-1" id="phonenumber" name="phonenumber" type="text" placeholder="eg: +60123456789" onfocusout="check_phonenumber()"/> 
                         <div id="cont_phonenumber_msg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" role="error">
                             <strong class="font-bold">Alert!</strong>
                             <span id="phonenumber_msg"></span> <br>
@@ -57,14 +57,14 @@
 
                         
                         <label class="label block w-full" for="botname">What name would you want to give your store in Telegram</label> 
-                        <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" id="botname" name="botname" type="text" placeholder="eg: Symplified Bot" onfocusout="check_botname()"/>
+                        <input class="input input-text-1" id="botname" name="botname" type="text" placeholder="eg: Symplified Bot" onfocusout="check_botname()"/>
                         <div id="cont_botname_msg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" role="error">
                             <strong class="font-bold">Alert!</strong>
                             <span id="botname_msg"></span> <br>
                         </div>
                         
                         <label class="label block w-full" for="botuname">What name would you want to give your Telegram</label> 
-                        <input class="input appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" id="botuname" name="botuname" type="text" placeholder="eg. @SymplifiedBot" onfocusout="check_botuname()"/>
+                        <input class="input input-text-1" id="botuname" name="botuname" type="text" placeholder="eg. @SymplifiedBot" onfocusout="check_botuname()"/>
                         <div id="cont_botuname_msg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5" role="error">
                             <strong class="font-bold">Alert!</strong>
                             <span id="botuname_msg"></span> <br>
@@ -86,20 +86,21 @@
                 let cont_phonenumber_msg = document.getElementById("cont_phonenumber_msg");
 
                 cont_phonenumber_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
-                const regex = new RegExp('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$');
+                const phone_format = new RegExp('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[\-\s\.\/0-9]*$','i');
                 if (phonenumber.value == "") {
                     phonenumber_msg.innerHTML = "Phonenumber can't be empty";
                     cont_phonenumber_msg.style.display = "block";
                 } else if (phonenumber.value[0] !== "+") {
                     phonenumber_msg.innerHTML = "Require phonenumber country code. eg: +60";
                     cont_phonenumber_msg.style.display = "block";
-                } else if (phonenumber.value.length < 7) {
+                } else if ((phonenumber.value).replace(/[^+0-9]/g, '').length  < 7) {
                     phonenumber_msg.innerHTML = "Not a valid phonenumber format (minimum length does not meet)";
                     cont_phonenumber_msg.style.display = "block";
-                } else if (phonenumber.value.length > 15){
-                    botuname_msg.innerHTML = "Bot name length must not exceed 15 digits";
-                    cont_botuname_msg.style.display = "block";
-                } else if (!regex.test(phonenumber.value)){
+                } else if ((phonenumber.value).replace(/[^+0-9]/g, '').length > 15){
+                    phonenumber_msg.innerHTML = "Phonenumber must not exceed 15 digits";
+                    cont_phonenumber_msg.style.display = "block";
+                } else if (!phone_format.test(phonenumber.value)){
+                    console.log("captured");
                     phonenumber_msg.innerHTML = "Not a valid phonenumber format";
                     cont_phonenumber_msg.style.display = "block";
                 } else {
@@ -107,8 +108,8 @@
                     cont_phonenumber_msg.style.display = "none";
                     // cont_phonenumber_msg.className = "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-5";
                     status = true;
+                    phonenumber.value = (phonenumber.value).replace(/[^+0-9]/g, '');
                 }
-                // phonenumber.value = (phonenumber.value).replace(/[^0-9]/g, '');
 
                 return status;
             }
@@ -119,18 +120,18 @@
                 let botname_msg = document.getElementById("botname_msg");
                 let cont_botname_msg = document.getElementById("cont_botname_msg");
 
-                const special_char = new RegExp('^[@]{0,1}[a-z0-9]+$','i');
+                const special_char = new RegExp('^[a-z0-9 ]+$','i');
 
                 cont_botname_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
                 if (botname.value == "") {
                     botname_msg.innerHTML = "Bot name can't be empty";
                     cont_botname_msg.style.display = "block";
                 } else if (botname.value.length > 50){
-                    botuname_msg.innerHTML = "Bot name length must not exceed 50 character";
-                    cont_botuname_msg.style.display = "block";
-                } else if (!special_char.test(botuname.value)){
-                    botuname_msg.innerHTML = "Special Character not allowed";
-                    cont_botuname_msg.style.display = "block";
+                    botname_msg.innerHTML = "Bot name length must not exceed 50 character";
+                    cont_botname_msg.style.display = "block";
+                } else if (!special_char.test(botname.value)){
+                    botname_msg.innerHTML = "Special Character not allowed";
+                    cont_botname_msg.style.display = "block";
                 } else {
                     // botname_msg.innerHTML = "Good";
                     cont_botname_msg.style.display = "none";
