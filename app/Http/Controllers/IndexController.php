@@ -87,10 +87,16 @@ class IndexController extends Controller
         // include './MTProtoTools/ResponseInfo.php';
         // include './MTProtoTools/MyTelegramOrgWrapper.php';
         
-        $MadelineProto = new \danog\MadelineProto\API('./sessions/session.' . $phonenumber);
+        $settings = [
+            'logger' => [
+                'param' => public_path().'/logs/Madeline.log'
+            ]
+        ];
+
+        $MadelineProto = new \danog\MadelineProto\API('./sessions/session.' . $phonenumber,$settings);
         $MadelineProto->start();
         $me = $MadelineProto->getSelf();
-        // $MadelineProto->logger($me);
+        $MadelineProto->logger($me);
 
         $Bool = $MadelineProto->account->checkUsername(['username' => $botunamenoalias]);
 

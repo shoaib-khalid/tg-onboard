@@ -16,4 +16,5 @@ yarn-error.log
 
 /public/MadelineProto.log
 /public/sessions/*
+/public/logs/*
 telegram.tar.gz
