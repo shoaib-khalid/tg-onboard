@@ -58,21 +58,25 @@ class IndexController extends Controller
         // sanitise and set to sessions
         if(!session('userid') || (isset($data['userid']) && session('userid') !== $data['userid'])) { 
             // $sanitised_userid = preg_replace('/[^0-9a-z-]/', '', $data['userid']);
+            $request->session()->forget('userid');
             $request->session()->put('userid',$data['userid']); 
         } 
 
         if(!session('phonenumber') || (isset($data['phonenumber']) && session('phonenumber') !== preg_replace('/[^0-9]/', '', $data['phonenumber']))) { 
             $sanitised_phonenumber = preg_replace('/[^0-9]/', '', $data['phonenumber']);
+            $request->session()->forget('phonenumber');
             $request->session()->put('phonenumber',$sanitised_phonenumber); 
         } 
 
         if(!session('botname') || (isset($data['botname']) && session('botname') !== $data['botname'])) { 
             $sanitised_botname = preg_replace('/[^0-9a-z ]/', '', $data['botuname']);
+            $request->session()->forget('botname');
             $request->session()->put('botname',$sanitised_botname); 
         } 
 
         if(!session('botuname') || (isset($data['botuname']) && ltrim(session('botuname'),'@') !== ltrim($data['botuname'],'@'))) { 
             $sanitised_botuname = preg_replace('/[^0-9a-z]/', '', $data['botuname']);
+            $request->session()->forget('botuname');
             $request->session()->put('botuname',$sanitised_botuname); 
         }
 
