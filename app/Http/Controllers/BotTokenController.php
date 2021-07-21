@@ -8,10 +8,16 @@ use Illuminate\Support\Facades\Http;
 
 class BotTokenController extends Controller
 {
-    //
+    /**
+     * Load Bot Token Page by POST (www-form)
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     function loadView(Request $request) {
-
+        // get userid from url
         $userid = $request->userid;
+        // get POST data body
         $data = $request->input();
 
         $status = "";
@@ -45,7 +51,7 @@ class BotTokenController extends Controller
     }
 
     /**
-     * Set webhook to telegram api
+     * Set webhook to telegram api by POST (JSON)
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response

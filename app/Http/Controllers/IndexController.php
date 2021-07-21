@@ -14,6 +14,7 @@ class IndexController extends Controller
      * @return \Illuminate\Http\Response
      */
     function loadView(Request $request){
+        // get userid from url
         $userid = $request->userid;
 
         \Log::channel('transaction')->info("Logger Works");
@@ -26,7 +27,7 @@ class IndexController extends Controller
     }
 
     /**
-     * Load Index Page if parameter POST
+     * Load MadelineProto Page if parameter POST triggered
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -37,6 +38,7 @@ class IndexController extends Controller
 
         // redirect back to get page is one of the variable unset
         $satisfy = false;
+
         // Input checking
         if ((isset($data['userid']) && isset($data['phonenumber']) && isset($data['botname']) && isset($data['botuname'])) ||
             (session('userid') && session('phonenumber') && session('botname') && session('botuname'))) { 
@@ -53,20 +55,25 @@ class IndexController extends Controller
             ]);
         };
 
-        // set to sessions
-        if(!session('userid')) { $request->session()->put('userid',$data['userid']); } 
-        if(!session('phonenumber')) { 
+        // sanitise and set to sessions
+        if(!session('userid') || (isset($data['userid']) && session('userid') !== $data['userid'])) { 
+            // $sanitised_userid = preg_replace('/[^0-9a-z-]/', '', $data['userid']);
+            $request->session()->put('userid',$data['userid']); 
+        } 
+
+        if(!session('phonenumber') || (isset($data['phonenumber']) && session('phonenumber') !== preg_replace('/[^0-9]/', '', $data['phonenumber']))) { 
             $sanitised_phonenumber = preg_replace('/[^0-9]/', '', $data['phonenumber']);
             $request->session()->put('phonenumber',$sanitised_phonenumber); 
         } 
-        if(!session('botname')) { $request->session()->put('botname',$data['botname']); } 
-        $revised = "";
-        if(!session('botuname')) { 
-            $revised = $data['botuname'];
-            if ($revised[0] !== '@') {
-                $revised = '@'.$revised;
-            }
-            $request->session()->put('botuname',$revised); 
+
+        if(!session('botname') || (isset($data['botname']) && session('botname') !== $data['botname'])) { 
+            $sanitised_botname = preg_replace('/[^0-9a-z ]/', '', $data['botuname']);
+            $request->session()->put('botname',$sanitised_botname); 
+        } 
+
+        if(!session('botuname') || (isset($data['botuname']) && ltrim(session('botuname'),'@') !== ltrim($data['botuname'],'@'))) { 
+            $sanitised_botuname = preg_replace('/[^0-9a-z]/', '', $data['botuname']);
+            $request->session()->put('botuname',$sanitised_botuname); 
         }
 
         session()->save();
@@ -75,7 +82,6 @@ class IndexController extends Controller
         $phonenumber = session('phonenumber');
         $botname = session('botname');
         $botuname = session('botuname');
-        $botunamenoalias = ltrim($botuname, '@');
 
         @include __DIR__.'/includes/ApiWrappers/Templates.php';
         @include __DIR__.'/includes/ApiWrappers/Start.php';
@@ -89,7 +95,7 @@ class IndexController extends Controller
         
         $settings = [
             'logger' => [
-                'param' => public_path().'/logs/Madeline.log'
+                'param' => public_path().'/logs/'.$phonenumber.'-madeline.log'
             ]
         ];
 
@@ -98,7 +104,7 @@ class IndexController extends Controller
         $me = $MadelineProto->getSelf();
         $MadelineProto->logger($me);
 
-        $Bool = $MadelineProto->account->checkUsername(['username' => $botunamenoalias]);
+        $Bool = $MadelineProto->account->checkUsername(['username' => $botuname]);
 
         if ($Bool === false) {
             $error="Bot Username already exists";
@@ -134,15 +140,20 @@ class IndexController extends Controller
         return redirect("/bottoken?userid=$userid&status=success");
     }
 
+    /**
+     * POST API to logout MadelineProto Sessions
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
     function logout(Request $request){
         $data = $request->input();
 
         // print_r($data);
         if (isset($data['phonenumber'])){
-
             $phonenumber = $data['phonenumber'];
             $pattern = '/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/i';
-            if (!preg_match($pattern, $phonenumber)){ // Outputs 1
+            if (!preg_match($pattern, $phonenumber)){
                 $error="Wrong Phonenumber Format";
                 $description="Wrong Phonenumber Format";
                 return view("failed",[
@@ -150,7 +161,9 @@ class IndexController extends Controller
                     'description' => $description,
                     'userid' => session('userid')
                 ]);
-            }    
+            }
+            // sanitise phonenumber
+            $phonenumber = preg_replace('/[^0-9]/', '', $phonenumber);
         
             // initiate madeline proto
             $MadelineProto = new \danog\MadelineProto\API('./sessions/session.'.$phonenumber);
@@ -158,15 +171,17 @@ class IndexController extends Controller
             // log user out
             $MadelineProto->logout();
         
+            // retry with async
             $MadelineProto->async(true);
             $MadelineProto->loop(function() use ($MadelineProto) {
                 yield $MadelineProto->logout();
             });
         
+            // kill unix processes
             $pid = exec("pgrep -f session.$phonenumber | tr '\n' ' '");
-        
             exec("kill -9 $pid");
         
+            // delete MadelineProto Session files
             foreach(glob(public_path()."/sessions/session.$phonenumber*") as $f) {
                 unlink($f);
             }
