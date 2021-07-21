@@ -107,7 +107,7 @@ trait Templates
                     $title = Lang::$current_lang['apiAutoWeb'];
                     $title .= "<br><b>$message</b>";
                     $phone = \htmlentities(Lang::$current_lang['loginUserPhoneWeb']);
-                    $form = "<input type='text' class='input input-text-1' name='phone_number' value='$phonenumber' placeholder='$phone' required readonly/>";
+                    $form = "<input type='text' class='input input-text-1' name='phone_number' value='+$phonenumber' placeholder='$phone' required readonly/>";
                 }
             } else {
                 if ($message) {
@@ -134,7 +134,7 @@ trait Templates
                 $title .= "<br><b>$message</b>";
 
                 $code = \htmlentities(Lang::$current_lang['loginUserPhoneCodeWeb']);
-                $form = "<input type='text' name='code' placeholder='$code' required/>";
+                $form = "<input class='input input-text-1' type='text' name='code' placeholder='$code' required/>";
             } else {
                 $title = \htmlentities(Lang::$current_lang['apiAppWeb']);
                 $title .= "<br><b>$message</b>";
