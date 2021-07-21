@@ -91,7 +91,7 @@ class IndexController extends Controller
         @include __DIR__.'/includes/Settings/Lang.php';
         // @include './MTProtoTools/MTProto.php';
         // include './MTProtoTools/ResponseInfo.php';
-        // include './MTProtoTools/MyTelegramOrgWrapper.php';
+        @include __DIR__.'/includes/MTProtoTools/MyTelegramOrgWrapper.php';
         
         $settings = [
             'logger' => [
