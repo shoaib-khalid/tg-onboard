@@ -196,7 +196,7 @@ class MyTelegramOrgWrapper
         $request->setHeaders($this->getHeaders('refer'));
         $response = yield $this->datacenter->getHTTPClient()->request($request);
         $result = yield $response->getBody()->buffer();
-        $title = \explode('</title>', \explode('<title>', "LOL".$result)[1])[0];
+        $title = \explode('</title>', \explode('<title>', $result)[1])[0];
         switch ($title) {
             case 'App configuration':
                 return true;
@@ -251,16 +251,17 @@ class MyTelegramOrgWrapper
         $request = new Request(self::MY_TELEGRAM_URL.'/apps/create', 'POST');
         $request->setHeaders($this->getHeaders('app'));
         $request->setBody(\http_build_query(['hash' => $this->creation_hash, 'app_title' => $settings['app_title'], 'app_shortname' => $settings['app_shortname'], 'app_url' => $settings['app_url'], 'app_platform' => $settings['app_platform'], 'app_desc' => $settings['app_desc']]));
+        $param_value = 'app_title: ' . $settings['app_title'] . ' | app_shortname: ' . $settings['app_shortname'] . ' | app_url: ' . $settings['app_url'] . ' | app_platform: ' . $settings['app_platform'] . ' | app_desc: ' . $settings['app_desc'];
         $response = yield $this->datacenter->getHTTPClient()->request($request);
         $result = yield $response->getBody()->buffer();
         if ($result) {
-            throw new Exception(\html_entity_decode($result));
+            throw new Exception(\html_entity_decode($result . " : " . $param_value));
         }
         $request = new Request(self::MY_TELEGRAM_URL.'/apps');
         $request->setHeaders($this->getHeaders('refer'));
         $response = yield $this->datacenter->getHTTPClient()->request($request);
         $result = yield $response->getBody()->buffer();
-        $title = \explode('</title>', \explode('<title>', "LIL".$result)[1])[0];
+        $title = \explode('</title>', \explode('<title>', $result)[1])[0];
         if ($title === 'Create new application') {
             $this->creation_hash = \explode('"/>', \explode('<input type="hidden" name="hash" value="', $result)[1])[0];
             throw new \danog\MadelineProto\Exception('App creation failed');
