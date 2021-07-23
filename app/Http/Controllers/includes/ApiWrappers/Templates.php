@@ -85,7 +85,7 @@ trait Templates
 
         $message = \htmlentities($message);
         if ($message === "TG-ERROR") {
-            $message = 'Sorry, we\'re unable to create Telegram API Automatically. Please goto <a class="underline text-blue-500" href="https://my.telegram.org/apps">my.telegram.org/apps</a>. Login , and create your Telegram API. After the Telegram API is created. Comeback to Symplified to re-create your telegram bot again';
+            $message = 'Sorry, we\'re unable to create Telegram API automatically. Please go to <a class="underline text-blue-500" href="https://my.telegram.org/apps">my.telegram.org/apps</a>. Login , and create your Telegram API. After the Telegram API is created. Comeback to Symplified to re-create your telegram bot again';
         }
         if (!isset($this->myTelegramOrgWrapper)) {
             if (isset($_POST['type'])) {

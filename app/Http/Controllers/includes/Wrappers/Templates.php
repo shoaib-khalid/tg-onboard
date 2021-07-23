@@ -52,7 +52,7 @@ trait Templates
                 if ($_POST['type'] === 'phone') {
                     $title = \str_replace(':', '', Lang::$current_lang['loginUser']);
                     $phone = \htmlentities(Lang::$current_lang['loginUserPhoneWeb']);
-                    $form = "<input type='text' name='phone_number' value='$phonenumber' placeholder='$phone' required readonly/>";
+                    $form = "<input class='input input-text-1' type='text' name='phone_number' value='+$phonenumber' placeholder='$phone' required readonly/>";
                 } else {
                     $title = \str_replace(':', '', Lang::$current_lang['loginBot']);
                     $token = \htmlentities(Lang::$current_lang['loginBotTokenWeb']);
@@ -69,7 +69,7 @@ trait Templates
         } elseif ($auth === MTProto::WAITING_CODE) {
             $title = \str_replace(':', '', Lang::$current_lang['loginUserCode']);
             $phone = \htmlentities(Lang::$current_lang['loginUserPhoneCodeWeb']);
-            $form = "<input type='text' name='phone_code' placeholder='$phone' required/>";
+            $form = "<input type='text' class='input input-text-1' name='phone_code' placeholder='$phone' required/>";
         } elseif ($auth === MTProto::WAITING_PASSWORD) {
             $title = Lang::$current_lang['loginUserPassWeb'];
             $hint = \htmlentities(\sprintf(
