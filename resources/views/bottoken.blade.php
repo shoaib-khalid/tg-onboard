@@ -23,10 +23,9 @@
                         Telegram Onboard by Symplified
                     </h2>
                     <p class="mt-2 text-center text-sm text-gray-600">
-                        Do not have your own telegram bot yet ? <br>
-                        <a href="https://symplified.biz" target="_blank" class="font-medium text-indigo-600 hover:text-indigo-500">
-                        Go to Symplified Merchant Portal to Register
-                        </a>
+                        Watch video below on how to create a telegram bot
+                        <br>
+                        <iframe class="w-full px-10" src="https://www.youtube.com/embed/RqzmQpI3kFU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </p>
                 </div>
             <div>
