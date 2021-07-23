@@ -151,7 +151,11 @@ trait Start
         } catch (\danog\MadelineProto\RPCErrorException $e) {
             yield $this->webAPIEcho(\sprintf(Lang::$current_lang['apiError'], $e->getMessage()));
         } catch (\danog\MadelineProto\Exception $e) {
-            yield $this->webAPIEcho(\sprintf(Lang::$current_lang['apiError'], $e->getMessage()));
+            if ($e->getMessage() === "ERROR") {
+                yield $this->webAPIEcho('TG-ERROR');
+            } else {
+                yield $this->webAPIEcho(\sprintf(Lang::$current_lang['apiError'], $e->getMessage()));
+            }
         }
     }
 }
