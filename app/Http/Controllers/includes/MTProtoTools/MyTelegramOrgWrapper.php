@@ -246,7 +246,7 @@ class MyTelegramOrgWrapper
             throw new Exception('Not logged in!');
         }
         if (yield from $this->hasApp()) {
-            throw new Exception('The app was already created!');
+            throw new Exception('The app was already created!, Please close this window session and try again');
         }
         $request = new Request(self::MY_TELEGRAM_URL.'/apps/create', 'POST');
         $request->setHeaders($this->getHeaders('app'));
