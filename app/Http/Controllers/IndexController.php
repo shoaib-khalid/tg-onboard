@@ -69,13 +69,13 @@ class IndexController extends Controller
         } 
 
         if(!session('botname') || (isset($data['botname']) && session('botname') !== $data['botname'])) { 
-            $sanitised_botname = preg_replace('/[^0-9a-z ]/', '', $data['botuname']);
+            $sanitised_botname = preg_replace('/[^0-9a-z ]/i', '', $data['botname']);
             $request->session()->forget('botname');
             $request->session()->put('botname',$sanitised_botname); 
         } 
 
         if(!session('botuname') || (isset($data['botuname']) && ltrim(session('botuname'),'@') !== ltrim($data['botuname'],'@'))) { 
-            $sanitised_botuname = preg_replace('/[^0-9a-z]/', '', $data['botuname']);
+            $sanitised_botuname = preg_replace('/[^0-9a-z]/i', '', $data['botuname']);
             $request->session()->forget('botuname');
             $request->session()->put('botuname',$sanitised_botuname); 
         }
