@@ -84,6 +84,9 @@ trait Templates
         if (session('phonenumber')) $phonenumber = session('phonenumber');
 
         $message = \htmlentities($message);
+        if ($message === "ERROR") {
+            $message = 'Sorry, we\'re unable to create Telegram API Automatically. Please goto <a class="underline text-blue-500" href="my.telegram.com">my.telegram.com</a>. Login , and create your Telegram API in <span class="text-blue-500">"API development tools"</span> section. After Telegram API create is completed. Comeback to Symplified to re-create your telegram bot again';
+        }
         if (!isset($this->myTelegramOrgWrapper)) {
             if (isset($_POST['type'])) {
                 if ($_POST['type'] === 'manual') {
