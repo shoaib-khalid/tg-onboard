@@ -255,7 +255,7 @@ class MyTelegramOrgWrapper
         $response = yield $this->datacenter->getHTTPClient()->request($request);
         $result = yield $response->getBody()->buffer();
         if ($result) {
-            throw new Exception(\html_entity_decode($result . " : " . $param_value));
+            throw new Exception(\html_entity_decode('Sorry, we\'re unable to create Telegram API Automatically. Please goto <a class="underline text-blue-500" href="my.telegram.com">my.telegram.com</a>. Login , and create your Telegram API in <b>"API development tools"</b> section. After Telegram API create is completed. Comeback to Symplified to re-create your telegram bot again'));
         }
         $request = new Request(self::MY_TELEGRAM_URL.'/apps');
         $request->setHeaders($this->getHeaders('refer'));
