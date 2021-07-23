@@ -251,11 +251,10 @@ class MyTelegramOrgWrapper
         $request = new Request(self::MY_TELEGRAM_URL.'/apps/create', 'POST');
         $request->setHeaders($this->getHeaders('app'));
         $request->setBody(\http_build_query(['hash' => $this->creation_hash, 'app_title' => $settings['app_title'], 'app_shortname' => $settings['app_shortname'], 'app_url' => $settings['app_url'], 'app_platform' => $settings['app_platform'], 'app_desc' => $settings['app_desc']]));
-        $param_value = 'app_title: ' . $settings['app_title'] . ' | app_shortname: ' . $settings['app_shortname'] . ' | app_url: ' . $settings['app_url'] . ' | app_platform: ' . $settings['app_platform'] . ' | app_desc: ' . $settings['app_desc'];
         $response = yield $this->datacenter->getHTTPClient()->request($request);
         $result = yield $response->getBody()->buffer();
         if ($result) {
-            throw new Exception(\html_entity_decode('Sorry, we\'re unable to create Telegram API Automatically. Please goto <a class="underline text-blue-500" href="my.telegram.com">my.telegram.com</a>. Login , and create your Telegram API in <b>"API development tools"</b> section. After Telegram API create is completed. Comeback to Symplified to re-create your telegram bot again'));
+            throw new Exception(\html_entity_decode($result));
         }
         $request = new Request(self::MY_TELEGRAM_URL.'/apps');
         $request->setHeaders($this->getHeaders('refer'));
