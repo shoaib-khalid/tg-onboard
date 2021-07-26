@@ -23,9 +23,13 @@
                         Telegram Onboard by Symplified
                     </h2>
                     <p class="mt-2 text-center text-sm text-gray-600">
-                        Watch video below on how to create a telegram bot
-                        <br>
-                        <iframe class="w-full px-10" src="https://www.youtube.com/embed/RqzmQpI3kFU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        Watch video below on how to create a telegram bot (click fullscreen for better resolution)
+                        <br><br>
+                        <!-- <iframe class="w-full px-10" src="https://www.youtube.com/embed/RqzmQpI3kFU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+                        <video width="100%" poster="{{ asset('assets/video/preview.jpg') }}" controls>
+                            <source src="{{ asset('assets/video/botfather.mp4') }}" type="video/mp4">
+                            Your browser does not support HTML video.
+                        </video>
                     </p>
                 </div>
             <div>

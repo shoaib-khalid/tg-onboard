@@ -99,11 +99,11 @@ class IndexController extends Controller
         
         $settings = [
             'logger' => [
-                'param' => public_path().'/logs/'.$phonenumber.'-madeline.log'
+                'param' => storage_path('logs/madeline'.$phonenumber.'-madeline.log')
             ]
         ];
 
-        $MadelineProto = new \danog\MadelineProto\API('./sessions/session.' . $phonenumber,$settings);
+        $MadelineProto = new \danog\MadelineProto\API(storage_path('sessions/session.' . $phonenumber),$settings);
         $MadelineProto->start();
         $me = $MadelineProto->getSelf();
         $MadelineProto->logger($me);
