@@ -88,70 +88,14 @@ class BotTokenController extends Controller
         $userid = $request['userid'];
         $token = $request['token'];
 
-        /**
-         * Set Webhook
-         */
-        $endpoint = config('services.telegram.url') . "/bot" . $token . "/setwebhook";
-        $webhookUrl = config('services.tgw.url') . "/incoming/" . $botuname;
-        $query = ['url' => $webhookUrl];
-        $parameters = urldecode(http_build_query($query));
+        $response = $this->setTelegramBotToken($botuname,$token);
+        if ($response !== null) return response()->json($response,400);
 
-        \Log::channel('transaction')->info("Telegram <- PATH " . $endpoint);
-        \Log::channel('transaction')->info("Telegram <- PARAM " . $parameters);
-        $response = Http::get($endpoint . "?" . $parameters);
-        \Log::channel('transaction')->info("Telegram <- RESP " . $response);
+        $response = $this->getUserServiceByRefId($botuname);
+        if ($response !== null) return response()->json($response,400);
 
-        if (!$response["ok"]) {
-            return response()->json([
-                'system' => 'telegram',
-                'action' => 'setwebhook',
-                'status' => false,
-                'system_response' => $response->json(),
-                'description' => 'Set webhook failed, please make sure you have entered the correct token'
-            ],$response["error_code"]);
-        }
-
-
-        /**
-         * Update User Service
-         */
-
-        $url = config('services.userservice.url');
-        $tokenBearer = config('services.userservice.token');
-        $endpoint = $url . "/v1/userChannels";
-        $header = [
-            "Content-type" => "application/json",
-            "Authorization" => "Bearer $tokenBearer"
-        ];
-        $object = [
-            'refId' => $botuname,
-            'userId' => $userid,
-            'channelName' => 'telegram',
-            'token' => $token,
-        ];
-        
-        \Log::channel('transaction')->info("User Service <- PATH " . $endpoint);
-        \Log::channel('transaction')->info("User Service <- BODY " . json_encode($object));
-        $response = Http::withHeaders($header)->post($endpoint, $object);
-        \Log::channel('transaction')->info("User Service <- RESP " . $response->status() . " " . $response);
-
-        if ($response["status"] !== 201) {
-            if ($response["status"] == 409) {
-                $description = "This bot username is already registered in the symplified. 
-                Contact admin if this happen t be a problem";
-            } else {
-                $description = "Backend problem, please contact system admin";
-            }
-
-            return response()->json([
-                'system' => 'user-service',
-                'action' => 'set userChannels',
-                'status' => false,
-                'system_response' => $response->json(),
-                'description' => $description
-            ],$response["status"]);
-
-        }
+        $response = $this->setUserServiceChannel($botuname,$userid,$token);
+        if ($response !== null) return response()->json($response,400);
 
         // if there's a madeline login session, log it out
         if(session('phonenumber')) {
@@ -189,5 +133,142 @@ class BotTokenController extends Controller
             'system_response' => 'success',
             'description' => "Bot registration sucess. To access your $botuname go to <a class=\"underline\" href=\"$boturl\">$boturl</a>. Share with it others"
         ],200);
+    }
+
+    // Bawah2 ni patut buat model TelgramModel & UserServiceModel ... tp malas.. hahaha
+
+    private function setTelegramBotToken($botuname,$token){
+
+        /**
+         * Set Webhook
+         */
+
+        $endpoint = config('services.telegram.url') . "/bot" . $token . "/setwebhook";
+        $webhookUrl = config('services.tgw.url') . "/incoming/" . $botuname;
+        $query = ['url' => $webhookUrl];
+        $parameters = urldecode(http_build_query($query));
+
+        \Log::channel('transaction')->info("Telegram <- PATH " . $endpoint);
+        \Log::channel('transaction')->info("Telegram <- PARAM " . $parameters);
+        $response = Http::get($endpoint . "?" . $parameters);
+        \Log::channel('transaction')->info("Telegram <- RESP " . $response);
+
+        if (!$response["ok"]) {
+            return [
+                'system' => 'telegram',
+                'action' => 'setwebhook',
+                'status' => false,
+                'system_response' => $response->json(),
+                'description' => 'Set webhook failed, please make sure you have entered the correct token'
+            ];
+        }
+
+        return null;
+    }
+
+    private function setUserServiceChannel($botuname,$userid,$token){
+
+        /**
+         * Update User Service
+         */
+
+        $url = config('services.userservice.url');
+        $tokenBearer = config('services.userservice.token');
+        $endpoint = $url . "/userChannels";
+        $header = [
+            "Content-type" => "application/json",
+            "Authorization" => "Bearer $tokenBearer"
+        ];
+        $object = [
+            'refId' => $botuname,
+            'userId' => $userid,
+            'channelName' => 'telegram',
+            'token' => $token,
+        ];
+        
+        \Log::channel('transaction')->info("User Service <- PATH " . $endpoint);
+        \Log::channel('transaction')->info("User Service <- BODY " . json_encode($object));
+        $response = Http::withHeaders($header)->post($endpoint, $object);
+        \Log::channel('transaction')->info("User Service <- RESP " . $response->status() . " " . $response);
+
+        if ($response["status"] !== 201) {
+            if ($response["status"] == 409) {
+                $description = "This bot username is already registered in the symplified. 
+                Contact admin if this happen t be a problem";
+            } else {
+                $description = "Backend problem, please contact system admin";
+            }
+
+            return [
+                'system' => 'user-service',
+                'action' => 'set userChannels',
+                'status' => false,
+                'system_response' => $response->json(),
+                'description' => $description
+            ];
+        }
+
+        return null;
+    }
+
+    private function getUserServiceByRefId($refId) {
+
+        $url = config('services.userservice.url');
+        $token = config('services.userservice.token');
+        $endpoint = $url . "/userChannels";
+        $data = [
+            'refId' => $refId,
+            'channelName' => 'telegram'
+        ];
+        $parameters = http_build_query($data);
+        $header = [
+            "Content-type" => "application/json",
+            "Authorization" => "Bearer $token"
+        ];
+        
+        // get token from user service
+        \Log::channel('transaction')->info("User Service <- PATH " . $endpoint);
+        \Log::channel('transaction')->info("User Service <- HEADER " . json_encode($header));
+        \Log::channel('transaction')->info("User Service <- PARAM " . $parameters);
+        $response = Http::withHeaders($header)->get($endpoint . "?" . $parameters);
+        \Log::channel('transaction')->info("User Service <- RESP " . $response);
+
+        if ($response["status"] !== 200) {
+            $description = "User service give response !== 200";
+            \Log::channel('transaction')->info("User Service <- ERROR " . $description);
+            return [
+                'system' => 'user-service',
+                'action' => 'get userChannels',
+                'status' => false,
+                'system_response' => $response->json(),
+                'description' => $description
+            ];
+        }
+
+        if (!empty($response["data"]["content"])){
+            $description = "Ops !! Seems like the bot username is already registered in Symplified.";
+            \Log::channel('transaction')->info("User Service <- ERROR " . $description);
+            return [
+                'system' => 'user-service',
+                'action' => 'get userChannels',
+                'status' => false,
+                'system_response' => $response->json(),
+                'description' => $description
+            ];
+        }
+
+        if (count($response["data"]["content"]) > 1){
+            $description = "User service give response.data.content > 1";
+            \Log::channel('transaction')->info("User Service <- ERROR " . $description);
+            return [
+                'system' => 'user-service',
+                'action' => 'get userChannels',
+                'status' => false,
+                'system_response' => $response->json(),
+                'description' => $description
+            ];
+        }
+
+        return null;
     }
 }
