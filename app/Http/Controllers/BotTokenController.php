@@ -58,6 +58,15 @@ class BotTokenController extends Controller
      */
     function setWebhook (Request $request) {
 
+        $reqinfo = [
+            "METHOD" => "setWebhook",
+            "PATH" => config('app.url') . $request->getRequestUri(),
+            "HEADER" => $request->header(),
+            "BODY" => $request->getContent()
+        ];
+
+        \Log::channel('csv')->info("Receive " . $reqinfo["METHOD"] . " Request",$reqinfo);
+
         $validate = Validator::make(
             $request->all(), [ 
                 'botuname' => 'required|string',
@@ -112,12 +121,21 @@ class BotTokenController extends Controller
                 '_token' => csrf_token()
             ];
             
-            \Log::channel('transaction')->info("TGO <- PATH " . $endpoint);
-            \Log::channel('transaction')->info("TGO <- HEADER " . json_encode($header));
-            \Log::channel('transaction')->info("TGO <- BODY " . json_encode($object));
+            \Log::channel('transaction')->debug("TGO <- PATH " . $endpoint);
+            \Log::channel('transaction')->debug("TGO <- HEADER " . json_encode($header));
+            \Log::channel('transaction')->debug("TGO <- BODY " . json_encode($object));
             $response = Http::withHeaders($header)->post($endpoint, $object);
-            \Log::channel('transaction')->info("TGO <- RESP " . $response);
-        } 
+            \Log::channel('transaction')->debug("TGO <- RESP " . $response);
+
+            $reqinfo = [
+                "PATH" => $endpoint,
+                "HEADER" => $header,
+                "BODY" => $object,
+                "RESPONSE" => $response->body(),
+                "RESPONSE_STATUS" => $response->status()
+            ];
+            \Log::channel('csv')->info("Logout MadelineSession",$reqinfo);
+        }
 
         // log everything else out
         $request->session()->forget('userid');
@@ -148,10 +166,19 @@ class BotTokenController extends Controller
         $query = ['url' => $webhookUrl];
         $parameters = urldecode(http_build_query($query));
 
-        \Log::channel('transaction')->info("Telegram <- PATH " . $endpoint);
-        \Log::channel('transaction')->info("Telegram <- PARAM " . $parameters);
+        \Log::channel('transaction')->debug("Telegram <- PATH " . $endpoint);
+        \Log::channel('transaction')->debug("Telegram <- PARAM " . $parameters);
         $response = Http::get($endpoint . "?" . $parameters);
-        \Log::channel('transaction')->info("Telegram <- RESP " . $response);
+        \Log::channel('transaction')->debug("Telegram <- RESP " . $response);
+
+        $reqinfo = [
+            "PATH" => $endpoint,
+            "HEADER" => [],
+            "PARAMETERS" => $parameters,
+            "RESPONSE" => $response->body(),
+            "RESPONSE_STATUS" => $response->status()
+        ];
+        \Log::channel('csv')->info("Set Telegram Webhook",$reqinfo);
 
         if (!$response["ok"]) {
             return [
@@ -186,10 +213,19 @@ class BotTokenController extends Controller
             'token' => $token,
         ];
         
-        \Log::channel('transaction')->info("User Service <- PATH " . $endpoint);
-        \Log::channel('transaction')->info("User Service <- BODY " . json_encode($object));
+        \Log::channel('transaction')->debug("User Service <- PATH " . $endpoint);
+        \Log::channel('transaction')->debug("User Service <- BODY " . json_encode($object));
         $response = Http::withHeaders($header)->post($endpoint, $object);
-        \Log::channel('transaction')->info("User Service <- RESP " . $response->status() . " " . $response);
+        \Log::channel('transaction')->debug("User Service <- RESP " . $response->status() . " " . $response);
+
+        $reqinfo = [
+            "PATH" => $endpoint,
+            "HEADER" => $header,
+            "BODY" => $object,
+            "RESPONSE" => $response->body(),
+            "RESPONSE_STATUS" => $response->status()
+        ];
+        \Log::channel('csv')->info("Save Telegram Token at User Service",$reqinfo);
 
         if ($response["status"] !== 201) {
             if ($response["status"] == 409) {
@@ -227,15 +263,24 @@ class BotTokenController extends Controller
         ];
         
         // get token from user service
-        \Log::channel('transaction')->info("User Service <- PATH " . $endpoint);
-        \Log::channel('transaction')->info("User Service <- HEADER " . json_encode($header));
-        \Log::channel('transaction')->info("User Service <- PARAM " . $parameters);
+        \Log::channel('transaction')->debug("User Service <- PATH " . $endpoint);
+        \Log::channel('transaction')->debug("User Service <- HEADER " . json_encode($header));
+        \Log::channel('transaction')->debug("User Service <- PARAM " . $parameters);
         $response = Http::withHeaders($header)->get($endpoint . "?" . $parameters);
-        \Log::channel('transaction')->info("User Service <- RESP " . $response);
+        \Log::channel('transaction')->debug("User Service <- RESP " . $response);
+
+        $reqinfo = [
+            "PATH" => $endpoint,
+            "HEADER" => $header,
+            "PARAMETERS" => $parameters,
+            "RESPONSE" => $response->body(),
+            "RESPONSE_STATUS" => $response->status()
+        ];
+        \Log::channel('csv')->info("Get Telegram Token from User Service",$reqinfo);
 
         if ($response["status"] !== 200) {
             $description = "User service give response !== 200";
-            \Log::channel('transaction')->info("User Service <- ERROR " . $description);
+            \Log::channel('transaction')->debug("User Service <- ERROR " . $description);
             return [
                 'system' => 'user-service',
                 'action' => 'get userChannels',
@@ -247,7 +292,7 @@ class BotTokenController extends Controller
 
         if (!empty($response["data"]["content"])){
             $description = "Ops !! Seems like the bot username is already registered in Symplified.";
-            \Log::channel('transaction')->info("User Service <- ERROR " . $description);
+            \Log::channel('transaction')->debug("User Service <- ERROR " . $description);
             return [
                 'system' => 'user-service',
                 'action' => 'get userChannels',
@@ -259,7 +304,7 @@ class BotTokenController extends Controller
 
         if (count($response["data"]["content"]) > 1){
             $description = "User service give response.data.content > 1";
-            \Log::channel('transaction')->info("User Service <- ERROR " . $description);
+            \Log::channel('transaction')->debug("User Service <- ERROR " . $description);
             return [
                 'system' => 'user-service',
                 'action' => 'get userChannels',

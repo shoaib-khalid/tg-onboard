@@ -17,7 +17,7 @@ class IndexController extends Controller
         // get userid from url
         $userid = $request->userid;
 
-        \Log::channel('transaction')->info("Logger Works");
+        \Log::channel('transaction')->debug("Load Index Page");
 
         if (!isset($userid)) {
             return view("welcome");
