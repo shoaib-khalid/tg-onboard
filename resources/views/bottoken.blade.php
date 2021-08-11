@@ -144,8 +144,8 @@
             let cont_botuname_msg = document.getElementById("cont_botuname_msg");
 
             const ending_name = new RegExp('.*bot$','i');
-            const special_char = new RegExp('^[@]{0,1}[a-z0-9]+$','i');
-            const first_char = new RegExp('^[@]{0,1}[a-z][a-z0-9]+$','i');
+            const special_char = new RegExp('^[@]{0,1}[a-z0-9_]+$','i');
+            const first_char = new RegExp('^[@]{0,1}[a-z][a-z0-9_]+$','i');
 
             cont_botuname_msg.className = "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-5";
             if (botuname.value == "") {
