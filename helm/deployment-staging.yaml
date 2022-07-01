@@ -1,0 +1,120 @@
+affinity: {}
+autoscaling:
+  enabled: false
+  maxReplicas: 100
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+csvLogging:
+  enable: true
+  volumeMount:
+    - mountPath: /var/www/html/storage/logs/
+      name: tg-onboard-csvl-vol
+  volumes:
+    - configMap:
+        name: tg-onboard-csvl-cm
+      name: tg-onboard-csvl-vol
+environmentConfig:
+  configmap:
+    .env: |-
+      APP_NAME=tg-onboard
+      APP_ENV=production
+      APP_KEY=base64:ZoFoVZFEtcK4MBNtAVI3WWlAX/C00/cR7HWluSTUqp0=
+      APP_DEBUG=false
+      APP_URL=http://tgo.symplified.it
+
+      TELEGRAM_URL=https://api.telegram.org
+      TELEGRAM_TOKEN=
+
+      TELEGRAM_WRAPPER_URL=https://tgw.symplified.it/telegram
+
+      USER_SERVICE_URL=https://api.symplified.it/user-service/v1
+      USER_SERVICE_TOKEN=accessToken
+
+      LOG_CHANNEL=stack
+      LOG_LEVEL=debug
+
+      DB_CONNECTION=mysql
+      DB_HOST=127.0.0.1
+      DB_PORT=3306
+      DB_DATABASE=tg_onboard
+      DB_USERNAME=root
+      DB_PASSWORD=
+
+      BROADCAST_DRIVER=log
+      CACHE_DRIVER=file
+      FILESYSTEM_DRIVER=local
+      QUEUE_CONNECTION=sync
+      SESSION_DRIVER=file
+      SESSION_LIFETIME=120
+
+      MEMCACHED_HOST=127.0.0.1
+
+      REDIS_HOST=127.0.0.1
+      REDIS_PASSWORD=null
+      REDIS_PORT=6379
+
+      MAIL_MAILER=smtp
+      MAIL_HOST=mailhog
+      MAIL_PORT=1025
+      MAIL_USERNAME=null
+      MAIL_PASSWORD=null
+      MAIL_ENCRYPTION=null
+      MAIL_FROM_ADDRESS=null
+      MAIL_FROM_NAME="tg-onboard"
+
+      AWS_ACCESS_KEY_ID=
+      AWS_SECRET_ACCESS_KEY=
+      AWS_DEFAULT_REGION=us-east-1
+      AWS_BUCKET=
+      AWS_USE_PATH_STYLE_ENDPOINT=false
+
+      PUSHER_APP_ID=
+      PUSHER_APP_KEY=
+      PUSHER_APP_SECRET=
+      PUSHER_APP_CLUSTER=mt1
+
+      MIX_PUSHER_APP_KEY=""
+      MIX_PUSHER_APP_CLUSTER="mt1"
+  volumeMount:
+    - mountPath: /var/www/html/.env
+      name: tg-onboard-ec-vol
+      subPath: .env
+  volumes:
+    - configMap:
+        name: tg-onboard-ec-cm
+      name: tg-onboard-ec-vol
+fullnameOverride: ''
+image:
+  pullPolicy: Always
+  repository: kalsym/tg-onboard
+  tag: 0.0.1
+imagePullSecrets:
+  - name: kalsym-docker-hub
+ingress:
+  annotations: {}
+  className: ''
+  enabled: true
+  hosts:
+    - host: tgo.symplified.it
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - tgo.symplified.it
+      secretName: secret-tls-it
+nameOverride: ''
+nodeSelector: {}
+podAnnotations: {}
+podSecurityContext: {}
+replicaCount: 1
+resources: {}
+securityContext: {}
+service:
+  port: 80
+  type: ClusterIP
+serviceAccount:
+  annotations: {}
+  create: false
+  name: ''
+tolerations: []
